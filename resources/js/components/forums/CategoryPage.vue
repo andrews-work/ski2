@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { Category } from '@/types';
+import { Link } from '@inertiajs/vue3';
 
 defineProps<{
     category: Category;
@@ -13,16 +14,16 @@ defineProps<{
         <h2 class="mb-6 text-2xl font-bold text-center text-gray-200">{{ category.name }}</h2>
         <p class="mt-2 text-sm text-gray-200">{{ category.description }}</p>
 
-        <!-- Display Subcategories -->
         <div v-if="subcategories.length">
-            <h3 class="mt-4 text-xl font-semibold">Subcategories:</h3>
-            <ul class="space-y-2">
+            <ul class="mt-4 space-y-4">
                 <li
                     v-for="subcategory in subcategories"
                     :key="subcategory.id"
                     class="p-4 border border-gray-400 rounded-lg"
                 >
-                    {{ subcategory.name }}
+                    <Link :href="`/forums/categories/${category.slug}/${subcategory.slug}`" class="block w-full">
+                        {{ subcategory.name }}
+                    </Link>
                 </li>
             </ul>
         </div>

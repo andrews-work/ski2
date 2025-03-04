@@ -38,11 +38,5 @@ class EventsSeeder extends Seeder
             'parent_id' => $events->id,
             'slug' => 'x-country',
         ]);
-
-        CategoryListModel::create([
-            'name' => 'Local Events',
-            'parent_id' => $events->id,
-            'slug' => 'local-events',
-        ]);
     }
 }

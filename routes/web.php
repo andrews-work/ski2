@@ -12,9 +12,8 @@ Route::get('/', function () {
 // forums
 Route::get('/forums', [ForumsController::class, 'index'])->name('forums');
 Route::get('/auths/forums', [ForumsController::class, 'index'])->middleware(['auth', 'verified'])->name('auths.forums');
-// Route::get('forums/categories/{category:slug}', [CategoryListController::class, 'all'])->name('forums.categories');
 Route::get('forums/categories/{category:slug}', [CategoryListController::class, 'show'])->name('forums.categories.show');
-
+Route::get('forums/categories/{category:slug}/{subcategory:slug}', [CategoryListController::class, 'showSubCategory'])->name('forums.categories.showSubCategory');
 
 Route::get('/resorts', function () {
     return Inertia::render('Resorts');

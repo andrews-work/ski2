@@ -38,6 +38,7 @@ export type BreadcrumbItemType = BreadcrumbItem;
 export interface Category {
     id: number;
     name: string;
+    slug: string;
     description: string;
-    parent_id: number | null;
+    parent_id?: number | null;
 }

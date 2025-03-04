@@ -8,58 +8,50 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryListController extends Controller
 {
-    // Get all categories and subcategories
-    public function all()
-    {
-        Log::info('CategoryListController - all');
-
-        $categories = $this->categories();
-        Log::info('Categories fetched: ' . count($categories));
-
-        $subcategories = $this->subcategories();
-        Log::info('Subcategories fetched: ' . count($subcategories));
-
-        return inertia('Forums', [
-            'categories' => $categories,
-            'subcategories' => $subcategories,
-        ]);
-    }
-
     public function show($slug)
     {
         Log::info('CategoryListController - show category: ' . $slug);
 
         $category = CategoryListModel::where('slug', $slug)->firstOrFail();
-        $subcategories = CategoryListModel::where('parent_id', $category->id)->get();
+        $subcategories = $this->getSubcategories($category->id);
+        $categories = $this->getCategories();
 
         Log::info('Category fetched: ' . $category->name);
         Log::info('Subcategories fetched: ' . $subcategories->count());
 
-        return inertia('CategoryPage', [
+        return inertia('Forums', [
             'category' => $category,
+            'categories' => $categories,
             'subcategories' => $subcategories,
         ]);
     }
 
-    // Get categories (top-level)
-    public function categories()
+    public function showSubCategory($categorySlug, $subcategorySlug)
     {
-        Log::info('CategoryListController - categories');
+        $category = CategoryListModel::where('slug', $categorySlug)->firstOrFail();
+        $subcategory = CategoryListModel::where('slug', $subcategorySlug)
+            ->where('parent_id', $category->id)
+            ->firstOrFail();
+        $subsubcategories = $this->getSubcategories($subcategory->id);
+        $categories = $this->getCategories();
 
-        $categories = CategoryListModel::whereNull('parent_id')->get();
-        Log::info('Categories fetched: ' . $categories->count());
-
-        return $categories;
+        return inertia('Forums', [
+            'category' => $category,
+            'subcategory' => $subcategory,
+            'subsubcategories' => $subsubcategories,
+            'categories' => $categories,
+        ]);
     }
 
-    // Get subcategories (child categories)
-    public function subcategories()
+    protected function getCategories()
     {
-        Log::info('CategoryListController - subcategories');
+        Log::info('CategoryListController - getCategories');
+        return CategoryListModel::whereNull('parent_id')->get();
+    }
 
-        $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
-        Log::info('Subcategories fetched: ' . $subcategories->count());
-
-        return $subcategories;
+    protected function getSubcategories($parentId)
+    {
+        Log::info('CategoryListController - getSubcategories for parent_id: ' . $parentId);
+        return CategoryListModel::where('parent_id', $parentId)->get();
     }
 }

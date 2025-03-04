@@ -3,30 +3,20 @@
 namespace App\Http\Controllers\Forums;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Forums\CategoryListController;
+use App\Models\Forums\CategoryListModel;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
 class ForumsController extends Controller
 {
-    protected $categoryListController;
-
-    // DI categories
-    public function __construct(CategoryListController $categoryListController)
-    {
-        $this->categoryListController = $categoryListController;
-    }
-
-    // get categories
     public function index()
     {
         Log::info('ForumsController - called');
 
-        $categories = $this->categoryListController->categories();
-        $subcategories = $this->categoryListController->subcategories();
+        $categories = CategoryListModel::whereNull('parent_id')->get();
+        $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
 
-        Log::info('Forums Page - rendering with ' . count($categories) . ' categories and ' . count($subcategories) . ' subcategories');
+        Log::info('Forums Page - rendering with ' . $categories->count() . ' categories and ' . $subcategories->count() . ' subcategories');
 
         return Inertia::render('Forums', [
             'categories' => $categories,
