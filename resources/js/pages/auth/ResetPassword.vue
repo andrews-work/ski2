@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue';
+import InputError from '@/components/app/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,7 +38,7 @@ const submit = () => {
             <div class="grid gap-6">
                 <div class="grid gap-2">
                     <Label for="email">Email</Label>
-                    <Input id="email" type="email" name="email" autocomplete="email" v-model="form.email" class="mt-1 block w-full" readonly />
+                    <Input id="email" type="email" name="email" autocomplete="email" v-model="form.email" class="block w-full mt-1" readonly />
                     <InputError :message="form.errors.email" class="mt-2" />
                 </div>
 
@@ -50,7 +50,7 @@ const submit = () => {
                         name="password"
                         autocomplete="new-password"
                         v-model="form.password"
-                        class="mt-1 block w-full"
+                        class="block w-full mt-1"
                         autofocus
                         placeholder="Password"
                     />
@@ -65,14 +65,14 @@ const submit = () => {
                         name="password_confirmation"
                         autocomplete="new-password"
                         v-model="form.password_confirmation"
-                        class="mt-1 block w-full"
+                        class="block w-full mt-1"
                         placeholder="Confirm password"
                     />
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
-                <Button type="submit" class="mt-4 w-full" :disabled="form.processing">
-                    <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+                <Button type="submit" class="w-full mt-4" :disabled="form.processing">
+                    <LoaderCircle v-if="form.processing" class="w-4 h-4 animate-spin" />
                     Reset password
                 </Button>
             </div>

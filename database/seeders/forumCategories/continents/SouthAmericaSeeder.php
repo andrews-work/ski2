@@ -15,6 +15,7 @@ class SouthAmericaSeeder extends Seeder
             'description' => 'Ski resorts in South America.',
             'parent_id' => '1',
             'slug' => 'south-america',
+            'type' => 'continent',
         ]);
 
         // Create Argentina category
@@ -22,6 +23,7 @@ class SouthAmericaSeeder extends Seeder
             'name' => 'Argentina',
             'parent_id' => $southAmerica->id,
             'slug' => 'argentina',
+            'type' => 'country',
         ]);
 
         // Create Argentina ski resorts
@@ -29,18 +31,21 @@ class SouthAmericaSeeder extends Seeder
             'name' => 'Cerro Catedral',
             'parent_id' => $argentina->id,
             'slug' => 'cerro-catedral',
+            'type' => 'resort',
         ]);
 
         CategoryListModel::create([
             'name' => 'La Hoya',
             'parent_id' => $argentina->id,
             'slug' => 'la-hoya',
+            'type' => 'resort',
         ]);
 
         CategoryListModel::create([
             'name' => 'Cerro Castor',
             'parent_id' => $argentina->id,
             'slug' => 'cerro-castor',
+            'type' => 'resort',
         ]);
 
         // Create Chile category
@@ -48,6 +53,7 @@ class SouthAmericaSeeder extends Seeder
             'name' => 'Chile',
             'parent_id' => $southAmerica->id,
             'slug' => 'chile',
+            'type' => 'country',
         ]);
 
         // Create Chile ski resorts
@@ -55,24 +61,28 @@ class SouthAmericaSeeder extends Seeder
             'name' => 'Valle Nevado',
             'parent_id' => $chile->id,
             'slug' => 'valle-nevado',
+            'type' => 'resort',
         ]);
 
         CategoryListModel::create([
             'name' => 'Portillo',
             'parent_id' => $chile->id,
             'slug' => 'portillo',
+            'type' => 'resort',
         ]);
 
         CategoryListModel::create([
             'name' => 'La Parva',
             'parent_id' => $chile->id,
             'slug' => 'la-parva',
+            'type' => 'resort',
         ]);
 
         CategoryListModel::create([
             'name' => 'El Colorado',
             'parent_id' => $chile->id,
             'slug' => 'el-colorado',
+            'type' => 'resort',
         ]);
     }
 }

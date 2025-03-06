@@ -13,24 +13,28 @@ class SafetySeeder extends Seeder
             'name' => 'Safety',
             'description' => 'Learn and discuss safety rules and best practices.',
             'slug' => 'safety',
+            'type' => 'category',
         ]);
 
         CategoryListModel::create([
             'name' => 'Rules',
             'parent_id' => $safety->id,
             'slug' => 'rules',
+            'type' => 'safety',
         ]);
 
         CategoryListModel::create([
             'name' => 'Avalanche Safety',
             'parent_id' => $safety->id,
             'slug' => 'avalanche-safety',
+            'type' => 'safety',
         ]);
 
         CategoryListModel::create([
             'name' => 'First Aid',
             'parent_id' => $safety->id,
             'slug' => 'first-aid',
+            'type' => 'safety',
         ]);
     }
 }

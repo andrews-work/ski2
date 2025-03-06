@@ -19,6 +19,7 @@ class ResortsSeeder extends Seeder
             'name' => 'Resorts',
             'description' => 'Find and discuss ski resorts around the world.',
             'slug' => 'resorts',
+            'type' => 'category',
         ]);
 
         // Run the continent seeders

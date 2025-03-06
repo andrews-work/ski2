@@ -4,16 +4,26 @@ use App\Http\Controllers\Forums\ForumsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Forums\CategoryListController;
+use App\Http\Controllers\Forums\ResortsCategoryController;
+use App\Http\Controllers\Forums\PostController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
+// posts
+Route::get('/posts/{postId}', [PostController::class, 'single'])->name('posts.single');
+route::get('/posts/{userId', [PostController::class, 'user-posts'])->name('posts.user');
+
 // forums
 Route::get('/forums', [ForumsController::class, 'index'])->name('forums');
-Route::get('/auths/forums', [ForumsController::class, 'index'])->middleware(['auth', 'verified'])->name('auths.forums');
-Route::get('forums/categories/{category:slug}', [CategoryListController::class, 'show'])->name('forums.categories.show');
-Route::get('forums/categories/{category:slug}/{subcategory:slug}', [CategoryListController::class, 'showSubCategory'])->name('forums.categories.showSubCategory');
+Route::prefix('/forums/categories/resorts')->group(function () {
+    Route::get('/', [ResortsCategoryController::class, 'showResorts'])->name('forums.categories.resorts');
+    Route::get('/{continentSlug}', [ResortsCategoryController::class, 'showContinent'])->name('forums.categories.resorts.continent');
+    Route::get('/{continentSlug}/{countrySlug}', [ResortsCategoryController::class, 'showCountry'])->name('forums.categories.resorts.country');
+    Route::get('/{continentSlug}/{countrySlug}/{resortSlug}', [ResortsCategoryController::class, 'showResort'])->name('forums.categories.resortsPage');
+});
+Route::get('/forums/categories/{category:slug}', [CategoryListController::class, 'show'])->name('forums.categories.show');
 
 Route::get('/resorts', function () {
     return Inertia::render('Resorts');

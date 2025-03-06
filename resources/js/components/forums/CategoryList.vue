@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { Category } from '@/types';
 import { Link } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
 
 defineProps<{
     categories: Category[];
     subcategories: Category[];
 }>();
+
+onMounted(() => {
+console.log('CategoryList - mounted');
+})
 
 const handleClick = (slug: string) => {
     console.log(`Category link clicked: /forums/categories/${slug}`);
@@ -26,7 +30,7 @@ const handleClick = (slug: string) => {
                     <div>
                         <div class="flex flex-col sm:flex-row">
                             <h3 class="text-xl font-semibold text-gray-400">{{ category.name }}</h3>
-                            <p class="mt-2 text-sm text-gray-200 sm:ml-5">{{ category.description }}</p>
+                            <p class="mt-2 text-sm text-gray-200 place-content-end sm:ml-5">{{ category.description }}</p>
                         </div>
 
                         <div v-if="subcategories.length">

@@ -7,17 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Forums\CategoryListModel;
 use App\Models\Forums\PostCommentModel;
+use Database\Factories\PostFactory;
 
 class PostModel extends Model
 {
     use HasFactory;
 
+    protected $table = 'posts';
     protected $fillable = [
         'user_id',
         'title',
         'content',
         'category_id',
     ];
+
+    protected static function newFactory()
+    {
+        return PostFactory::new();
+    }
 
     public function user()
     {
@@ -31,6 +38,6 @@ class PostModel extends Model
 
     public function comments()
     {
-        return $this -> belongsTo(PostCommentModel::class);
+        return $this -> hasMany(PostCommentModel::class);
     }
 }

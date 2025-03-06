@@ -42,3 +42,10 @@ export interface Category {
     description: string;
     parent_id?: number | null;
 }
+
+export interface Post {
+    id: number;
+    title: string;
+    content: string;
+    user_id: number;
+}

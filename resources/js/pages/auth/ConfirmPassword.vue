@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue';
+import InputError from '@/components/app/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,7 +31,7 @@ const submit = () => {
                     <Input
                         id="password"
                         type="password"
-                        class="mt-1 block w-full"
+                        class="block w-full mt-1"
                         v-model="form.password"
                         required
                         autocomplete="current-password"
@@ -43,7 +43,7 @@ const submit = () => {
 
                 <div class="flex items-center">
                     <Button class="w-full" :disabled="form.processing">
-                        <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+                        <LoaderCircle v-if="form.processing" class="w-4 h-4 animate-spin" />
                         Confirm Password
                     </Button>
                 </div>

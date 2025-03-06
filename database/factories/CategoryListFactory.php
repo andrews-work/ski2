@@ -2,16 +2,12 @@
 
 namespace Database\Factories\Forums;
 
-use App\Http\Controllers\Forums\CategoryList;
+use App\Http\Controllers\Forums\CategoryListController;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Forums\CategoryList>
- */
 class CategoryListFactory extends Factory
 {
-
-    protected $model = CategoryList::class;
+    protected $model = CategoryListController::class;
 
     public function definition(): array
     {
