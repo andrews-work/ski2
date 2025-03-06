@@ -16,6 +16,9 @@ class ForumsController extends Controller
 
         $categories = CategoryListModel::whereNull('parent_id')->get();
         $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
+        $continents = CategoryListModel::where('type', 'continent')->get();
+        $countries = CategoryListModel::where('type', 'country')->get();
+        $resorts = CategoryListModel::where('type', 'resort')->get();
 
         $posts = PostModel::with(['user', 'category'])
             ->orderBy('created_at', 'desc')
@@ -27,7 +30,16 @@ class ForumsController extends Controller
         return Inertia::render('Forums', [
             'categories' => $categories,
             'subcategories' => $subcategories,
+            'continents' => $continents,
+            'countries' => $countries,
+            'resorts' => $resorts,
             'posts' => $posts,
+            'category' => null,
+            'subcategory' => null,
+            'continent' => null,
+            'country' => null,
+            'resort' => null,
+            'post' => null,
         ]);
     }
 }

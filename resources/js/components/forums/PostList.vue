@@ -10,8 +10,8 @@ const { posts, categories } = defineProps<{
 
 onMounted(() => {
   console.log('Posts List Mounted');
-  console.log('Posts Data:', posts);
-  console.log('Categories Data:', categories);
+//   console.log('Posts Data:', posts);
+//   console.log('Categories Data:', categories);
 });
 
 const truncateContent = (content: string, wordLimit: number) => {

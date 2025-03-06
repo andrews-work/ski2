@@ -27,28 +27,82 @@ class PostController extends Controller
     }
 
     public function single($postId)
-{
-    Log::info('PostController - single');
+    {
+        Log::info('PostController - single');
 
-    // Fetch the post from the database using the $postId
-    $post = PostModel::with(['user', 'category'])->findOrFail($postId);
+        $post = PostModel::with(['user', 'category'])->findOrFail($postId);
 
-    Log::info('Viewing post', [
-        'post_id' => $post->id,
-        'post_title' => $post->title,
-    ]);
+        Log::info('Viewing post', [
+            'post_id' => $post->id,
+            'post_title' => $post->title,
+            'post_category' => $post->category,
+        ]);
 
-    // Fetch all top-level categories (if needed)
-    $categories = CategoryListModel::whereNull('parent_id')->get();
+        $categories = CategoryListModel::whereNull('parent_id')->get();
+        $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
+        $continents = CategoryListModel::where('type', 'continent')->get();
+        $countries = CategoryListModel::where('type', 'country')->get();
+        $resorts = CategoryListModel::where('type', 'resort')->get();
 
-    return Inertia::render('Forums', [
-        'post' => $post,
-        'category' => $post->category, // Pass the post's category
-        'categories' => $categories, // Pass all top-level categories
-    ]);
-}
+        $posts = PostModel::with(['user', 'category'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    public function create(){
+        return Inertia::render('Forums', [
+            'post' => $post,
+            'category' => $post->category,
+            'categories' => $categories,
+            'subcategories' => $subcategories,
+            'continents' => $continents,
+            'countries' => $countries,
+            'resorts' => $resorts,
+            'posts' => $posts,
+            'continent' => null,
+            'country' => null,
+            'resort' => null,
+            'subcategory' => null,
+        ]);
+    }
+
+    public function userPosts($userId)
+    {
+        Log::info('PostController - userPosts');
+
+        // Fetch posts by the specific user
+        $posts = PostModel::with(['user', 'category'])
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        Log::info('Posts for user', ['user_id' => $userId, 'posts' => $posts]);
+
+        // Get categories for the sidebar
+        $categories = CategoryListModel::whereNull('parent_id')->get();
+        $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
+        $continents = CategoryListModel::where('type', 'continent')->get();
+        $countries = CategoryListModel::where('type', 'country')->get();
+        $resorts = CategoryListModel::where('type', 'resort')->get();
+
+        return Inertia::render('Forums', [
+            'userPost' => $posts,
+            'categories' => $categories,
+            'subcategories' => $subcategories,
+            'continents' => $continents,
+            'countries' => $countries,
+            'resorts' => $resorts,
+            'continent' => null,
+            'country' => null,
+            'resort' => null,
+            'subcategory' => null,
+            'category' => null,
+            'posts' => $posts,
+            'post' => null,
+        ]);
+    }
+
+
+    public function create()
+    {
         Log::info('PostController - Create');
     }
 

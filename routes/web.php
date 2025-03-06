@@ -12,8 +12,8 @@ Route::get('/', function () {
 })->name('home');
 
 // posts
-Route::get('/posts/{postId}', [PostController::class, 'single'])->name('posts.single');
-route::get('/posts/{userId', [PostController::class, 'user-posts'])->name('posts.user');
+Route::get('/posts/{postId}', [PostController::class, 'single'])->name('posts');
+Route::get('/posts/users/{userId}', [PostController::class, 'userPosts'])->name('userPosts');
 
 // forums
 Route::get('/forums', [ForumsController::class, 'index'])->name('forums');
