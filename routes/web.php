@@ -6,14 +6,23 @@ use Inertia\Inertia;
 use App\Http\Controllers\Forums\CategoryListController;
 use App\Http\Controllers\Forums\ResortsCategoryController;
 use App\Http\Controllers\Forums\PostController;
+use App\Http\Controllers\Forums\PostCommentController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
 // posts
-Route::get('/posts/{postId}', [PostController::class, 'single'])->name('posts');
-Route::get('/posts/users/{userId}', [PostController::class, 'userPosts'])->name('userPosts');
+Route::get('/forums/posts/{postId}', [PostController::class, 'single'])->name('posts');
+Route::get('/forums/posts/users/{userId}', [PostController::class, 'userPosts'])->name('userPosts');
+Route::get('/posts/create', [PostController::class, 'showCreatePost'])->name('showCreatePost');
+Route::post('/forums/newPost', [PostController::class, 'createPost'])->name('createPost');
+
+// post comments
+Route::get('/posts/{postId}/comments', [PostCommentController::class, 'list']);
+Route::post('/posts/{postId}/comments', [PostCommentController::class, 'create']);
+Route::put('/comments/{commentId}', [PostCommentController::class, 'update']);
+Route::delete('/comments/{commentId}', [PostCommentController::class, 'delete']);
 
 // forums
 Route::get('/forums', [ForumsController::class, 'index'])->name('forums');
@@ -43,7 +52,7 @@ Route::get('/auths/marketplace', function () {
 
 Route::get('dashboard', function () {
     return Inertia::render('auths/Dashboard');
-})->middleware(['auth', 'verified'])->name('auths.dashboard');
+})->name('auths.dashboard');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -2,6 +2,7 @@
 import { type Post, type Category } from '@/types';
 import { onMounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import CommentList from '@/components/forums/CommentList.vue';
 
 const { post, category } = defineProps<{
   post: Post | null;
@@ -10,8 +11,8 @@ const { post, category } = defineProps<{
 
 onMounted(() => {
   console.log('PostPage Mounted');
-//   console.log('Post Data:', post);
-//   console.log('Category Data:', category);
+  console.log('Post Data:', post);
+  console.log('Category Data:', category);
 });
 
 const isValidDate = (date: string) => {
@@ -43,7 +44,6 @@ const formatDate = (date: string) => {
   const hours = postDate.getHours().toString().padStart(2, '0');
   const minutes = postDate.getMinutes().toString().padStart(2, '0');
 
-  // Return formatted date and time
   return `${dayWithSuffix} ${month} ${year} at ${hours}:${minutes}`;
 };
 
@@ -59,25 +59,32 @@ const getDayWithSuffix = (day: number) => {
 </script>
 
 <template>
-    <div v-if="post && category" class="p-8 mx-auto text-white shadow-xl max-w-7xl rounded-xl">
+    <div class="flex flex-col items-center justify-center min-h-screen p-8 text-white">
+        <div v-if="post && category" class="w-full max-w-4xl space-y-8">
 
-        <div class="">
-            <Link :href="`/posts/users/${post.user.id}`" class="block">
-                <p class="mb-4 text-sm text-purple-500 cursor-pointer hover:text-gray-300">{{ post.user.name }}</p>
-            </Link>
+            <div class="">
+                <Link :href="`/forums/posts/users/${post.user.id}`" class="block">
+                    <p class="mt-8 mb-4 text-yellow-400 cursor-pointer hover:text-gray-300">{{ post.user.name }}</p>
+                </Link>
+            </div>
+
+            <h1 class="mt-8 mb-8 text-xl font-extrabold text-gray-400 md:text-3xl">{{ post.title }}</h1>
+
+            <div class="py-6 min-h-80">
+                <p class="leading-relaxed md:text-lg">{{ post.content }}</p>
+            </div>
+
+            <div class="flex items-center justify-between pb-4 mt-6 space-x-6 border-b border-b-gray-700">
+                <p class="text-sm text-gray-400">{{ timeAgo(post.created_at) }}</p>
+                <p class="text-sm text-gray-400 cursor-pointer hover:text-orange-500">{{ category.name }}</p>
+            </div>
+
+            <CommentList :comments="post.comments" />
         </div>
 
-        <h1 class="mb-8 text-xl font-extrabold text-gray-400 md:text-3xl">{{ post.title }}</h1>
-        <div class="py-6 min-h-80 ">
-            <p class="leading-relaxed md:text-lg">{{ post.content }}</p>
+        <div v-else class="flex items-center justify-center h-full p-6 bg-gray-800 rounded-xl">
+            <p class="text-2xl text-gray-400">Loading...</p>
         </div>
-        <div class="flex items-center justify-between pb-4 mt-6 space-x-6 border-b border-b-gray-700">
-            <p class="text-xs text-gray-400">{{ timeAgo(post.created_at) }}</p>
-            <p class="text-sm text-gray-400 cursor-pointer hover:text-orange-500">{{ category.name }}</p>
-        </div>
-    </div>
-    <div v-else class="flex items-center justify-center h-full p-6 bg-gray-800 rounded-xl">
-        <p class="text-2xl text-gray-400">Loading...</p>
     </div>
 </template>
 

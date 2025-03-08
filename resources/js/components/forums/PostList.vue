@@ -56,14 +56,14 @@ const timeAgo = (date: string) => {
 
 <template>
     <div class="p-6 rounded-lg shadow-md">
-        <h2 class="mb-6 text-2xl font-bold text-center text-white">Recent Posts</h2>
+        <h2 class="mb-6 text-2xl font-bold text-center text-gray-400">Recent Posts</h2>
         <ul class="space-y-4">
             <li
                 v-for="post in posts"
                 :key="post.id"
                 class="p-6 transition-shadow duration-200 border border-gray-700 rounded-lg hover:border-gray-400 hover:shadow-lg"
             >
-                <Link :href="`/posts/${post.id}`" class="block">
+                <Link :href="`/forums/posts/${post.id}`" class="block">
                     <h1 class="text-xl font-semibold text-gray-400 truncate">{{ truncateContent(post.title, 5) }}</h1>
 
                     <p class="max-w-full mt-2 text-base text-gray-200 truncate whitespace-nowrap">
@@ -71,9 +71,11 @@ const timeAgo = (date: string) => {
                     </p>
 
                     <div class="flex items-center justify-between mt-4 space-x-4">
-                        <p class="text-sm text-gray-400 hover:text-orange-300">{{ post.user.name }}</p>
+                        <Link :href="`/forums/posts/users/${post.user.id}`" class="block">
+                            <p class="text-sm text-gray-400 hover:text-orange-300">{{ post.user.name }}</p>
+                        </Link>
                         <p class="text-xs text-gray-500">{{ timeAgo(post.created_at) }}</p>
-                        <p class="text-sm text-gray-400 hover:text-orange-300">{{ post.category.name }}</p>
+                        <p class="text-sm text-gray-400 hover:text-purple-400">{{ post.category.name }}</p>
                     </div>
                 </Link>
             </li>

@@ -1,106 +1,116 @@
 <script setup lang="ts">
-    import { ref, computed, onMounted, watch } from 'vue';
-    import { usePage } from '@inertiajs/vue3';
-    import { type Category, type Post } from '@/types';
-    import AppLayout from '@/layouts/AppLayout.vue';
-    import { Head } from '@inertiajs/vue3';
-    import CategoryList from '@/components/forums/CategoryList.vue';
-    import PostList from '@/components/forums/PostList.vue';
-    import PostPage from '@/components/forums/Post.vue';
-    import UserPostPage from '@/components/forums/UserPost.vue';
-    import CategoryRouter from '@/components/forums/CategoryRouter.vue';
-    import ContinentsPage from '@/components/forums/ContinentsPage.vue';
-    import CountryPage from '@/components/forums/CountryPage.vue';
-    import ResortPage from '@/components/forums/ResortPage.vue';
-    import SearchBar from '@/components/forums/Search.vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import { type Category, type Post } from '@/types';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { Head } from '@inertiajs/vue3';
+import CategoryList from '@/components/forums/CategoryList.vue';
+import PostList from '@/components/forums/PostList.vue';
+import PostPage from '@/components/forums/Post.vue';
+import UserPostPage from '@/components/forums/UserPost.vue';
+import CategoryRouter from '@/components/forums/CategoryRouter.vue';
+import ContinentsPage from '@/components/forums/ContinentsPage.vue';
+import CountryPage from '@/components/forums/CountryPage.vue';
+import ResortPage from '@/components/forums/ResortPage.vue';
+import SearchBar from '@/components/forums/Search.vue';
+import CreatePost from '@/components/forums/PostCreate.vue';
 
-    const props = withDefaults(defineProps<{
-        categories: Category[];
-        category: Category | null;
-        subcategories: Category[];
-        subcategory: Category | null;
-        continents: Category[];
-        continent: Category | null;
-        countries: Category[];
-        country: Category | null;
-        resorts: Category[];
-        resort: Category | null;
-        posts: Post[];
-        post: Post | null;
-    }>(), {
-        category: null,
-        subcategory: null,
-        continent: null,
-        country: null,
-        resort: null,
-        post: null,
-        posts: () => [],
-    });
+// Define props with default values
+const props = withDefaults(defineProps<{
+    categories?: Category[];
+    category?: Category | null;
+    subcategories?: Category[];
+    subcategory?: Category | null;
+    continents?: Category[];
+    continent?: Category | null;
+    countries?: Category[];
+    country?: Category | null;
+    resorts?: Category[];
+    resort?: Category | null;
+    posts?: Post[];
+    post?: Post | null;
+    userPost?: Post[] | null;
+    createPost?: boolean | null;
+}>(), {
+    categories: () => [],
+    category: null,
+    subcategories: () => [],
+    subcategory: null,
+    continents: () => [],
+    continent: null,
+    countries: () => [],
+    country: null,
+    resorts: () => [],
+    resort: null,
+    posts: () => [],
+    post: null,
+    userPost: null,
+    createPost: null,
+});
 
-    const page = usePage();
+const page = usePage();
 
-    onMounted(() => {
-        // console.log('Forums.vue mounted');
-        // console.log('Post:', props.post);
-        // console.log('Category:', props.category);
-        // console.log('Categories:', props.categories);
-    });
+const selectedCategory = ref<Category | null>(null);
+const selectedSubCategory = ref<Category | null>(null);
+const selectedCountry = ref<Category | null>(null);
+const selectedPost = ref<Post | null>(null);
+const selectedPostCategory = ref<Category | null>(null);
+const selectedUserPost = ref<Category | null>(null);
 
-    const selectedCategory = ref<Category | null>(null);
-    const selectedSubCategory = ref<Category | null>(null);
-    const selectedCountry = ref<Category | null>(null);
-    const selectedPost = ref<Post | null>(null);
-    const selectedPostCategory = ref<Category | null>(null);
+function selectCategory(category: Category) {
+    selectedCategory.value = category;
+    selectedSubCategory.value = null;
+    selectedCountry.value = null;
+}
 
-    function selectCategory(category: Category) {
-        selectedCategory.value = category;
-        selectedSubCategory.value = null;
-        selectedCountry.value = null;
+function selectSubCategory(subcategory: Category) {
+    selectedSubCategory.value = subcategory;
+    selectedCountry.value = null;
+}
+
+function selectCountry(country: Category) {
+    selectedCountry.value = country;
+}
+
+function selectPost(post: Post, category: Category) {
+    console.log('Selected Post:', post);
+    selectedPost.value = post;
+    selectedPostCategory.value = category;
+}
+
+function resetPost() {
+    selectedPost.value = null;
+    selectedPostCategory.value = null;
+}
+
+function selectUserPost(userPost: Post[]) {
+    console.log('Selected User Posts:', userPost);
+    selectedUserPost.value = userPost;
+}
+
+const breadcrumbs = [
+    {
+        title: 'Forums',
+        href: '/forums',
+    },
+];
+
+const currentComponent = computed(() => {
+    if (props.createPost) return CreatePost;
+    if (props.userPost) return UserPostPage;
+    if (props.post) return PostPage;
+    if (props.resort) return ResortPage;
+    if (props.country) return CountryPage;
+    if (props.continent) return ContinentsPage;
+    if (props.category) return CategoryRouter;
+    return null;
+});
+
+watch(() => page.url, (newUrl) => {
+    if (newUrl === '/forums') {
+        resetPost();
     }
-
-    function selectSubCategory(subcategory: Category) {
-        selectedSubCategory.value = subcategory;
-        selectedCountry.value = null;
-    }
-
-    function selectCountry(country: Category) {
-        selectedCountry.value = country;
-    }
-
-    function selectPost(post: Post, category: Category) {
-        console.log('Selected Post:', post);
-        selectedPost.value = post;
-        selectedPostCategory.value = category;
-    }
-
-    function resetPost() {
-        selectedPost.value = null;
-        selectedPostCategory.value = null;
-    }
-
-    const breadcrumbs = [
-        {
-            title: 'Forums',
-            href: '/forums',
-        },
-    ];
-
-    const currentComponent = computed(() => {
-        if (props.userPost) return UserPostPage;
-        if (props.post) return PostPage;
-        if (props.resort) return ResortPage;
-        if (props.country) return CountryPage;
-        if (props.continent) return ContinentsPage;
-        if (props.category) return CategoryRouter;
-        return null;
-    });
-
-
-    watch(() => page.url, (newUrl) => {
-        if (newUrl === '/forums') {
-            resetPost();
-        }
-    });
+});
 </script>
 
 <template>
@@ -108,7 +118,7 @@
     <AppLayout :breadcrumbs="breadcrumbs" class="">
 
         <!-- Default Forums Page -->
-        <div v-if="!currentComponent" class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl">
+        <div v-if="!currentComponent" class="flex flex-col flex-1 gap-4 p-4 rounded-xl">
 
             <!-- top row -->
             <div class="grid grid-flow-row gap-4 auto-rows-min md:grid-cols-3 md:grid-rows-1 sm:grid-cols-1 sm:grid-rows-6">
@@ -147,7 +157,7 @@
             </div>
         </div>
 
-        <!-- dynamic rendering -->
+        <!-- Dynamic rendering -->
         <component
             :is="currentComponent"
             v-else
@@ -162,6 +172,9 @@
             :post="post"
             :categories="categories"
             :posts="posts"
+            :userPost="userPost"
+            :createPost="createPost"
+            :errors="$page.props.errors"
             class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl"
         />
 

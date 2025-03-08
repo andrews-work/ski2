@@ -9,17 +9,14 @@ defineProps<{
 }>();
 
 onMounted(() => {
-console.log('CategoryList - mounted');
+    console.log('CategoryList - mounted');
 })
 
-const handleClick = (slug: string) => {
-    console.log(`Category link clicked: /forums/categories/${slug}`);
-};
 </script>
 
 <template>
     <div class="p-6 rounded-lg shadow-md">
-        <h2 class="mb-6 text-2xl font-bold text-center text-gray-200">Categories</h2>
+        <h2 class="mb-6 text-2xl font-bold text-center text-gray-400">Categories</h2>
         <ul class="space-y-4">
             <li
                 v-for="category in categories"

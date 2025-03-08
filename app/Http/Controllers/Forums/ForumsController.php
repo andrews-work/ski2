@@ -40,6 +40,9 @@ class ForumsController extends Controller
             'country' => null,
             'resort' => null,
             'post' => null,
+            'userPost' => null,
+            'createPost' => null,
         ]);
     }
+
 }

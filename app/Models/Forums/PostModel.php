@@ -38,6 +38,6 @@ class PostModel extends Model
 
     public function comments()
     {
-        return $this -> hasMany(PostCommentModel::class);
+        return $this -> hasMany(PostCommentModel::class, 'forum_post_id');
     }
 }

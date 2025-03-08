@@ -8,18 +8,15 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Forums\CategoryListModel;
 use Inertia\Inertia;
+use App\Http\Requests\CreatePostRequest;
 
 class PostController extends Controller
 {
     public function postList()
     {
-        Log::info('PostController - postList');
-
         $posts = PostModel::with(['user', 'category'])
             ->orderBy('created_at', 'desc')
             ->get();
-
-        Log::info('posts', ['posts' => $posts]);
 
         return inertia('Forums', [
             'post' => $posts,
@@ -28,15 +25,7 @@ class PostController extends Controller
 
     public function single($postId)
     {
-        Log::info('PostController - single');
-
-        $post = PostModel::with(['user', 'category'])->findOrFail($postId);
-
-        Log::info('Viewing post', [
-            'post_id' => $post->id,
-            'post_title' => $post->title,
-            'post_category' => $post->category,
-        ]);
+        $post = PostModel::with(['user', 'category', 'comments.user'])->findOrFail($postId);
 
         $categories = CategoryListModel::whereNull('parent_id')->get();
         $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
@@ -61,22 +50,17 @@ class PostController extends Controller
             'country' => null,
             'resort' => null,
             'subcategory' => null,
+            'userPost' => null,
         ]);
     }
 
     public function userPosts($userId)
     {
-        Log::info('PostController - userPosts');
-
-        // Fetch posts by the specific user
         $posts = PostModel::with(['user', 'category'])
             ->where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        Log::info('Posts for user', ['user_id' => $userId, 'posts' => $posts]);
-
-        // Get categories for the sidebar
         $categories = CategoryListModel::whereNull('parent_id')->get();
         $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
         $continents = CategoryListModel::where('type', 'continent')->get();
@@ -100,19 +84,48 @@ class PostController extends Controller
         ]);
     }
 
-
-    public function create()
+    public function showCreatePost()
     {
-        Log::info('PostController - Create');
+        $categories = CategoryListModel::whereNull('parent_id')->get();
+        $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
+
+        return Inertia::render('Forums', [
+            'createPost' => true,
+            'categories' => $categories,
+            'subcategories' => $subcategories,
+            'continent' => null,
+            'continents' => null,
+            'category' => null,
+            'country' => null,
+            'resort' => null,
+            'subcategory' => null,
+            'userPost' => null,
+        ]);
+    }
+
+    public function createPost(CreatePostRequest $request)
+    {
+        Log::info('PostController - createPost');
+
+        Log::info('validated' , $request -> validated());
+
+        $post = PostModel::create([
+            'user_id' => Auth::user()->id,
+            'title' => $request['title'],
+            'content' => $request['content'],
+            'category_id' => $request['category_id'],
+        ]);
+
+        Log::info('Post created:', $post->toArray());
+
+        return redirect()->route('posts', ['postId' => $post->id]);
     }
 
     public function update()
     {
-        Log::info('PostController - Update');
     }
 
     public function delete()
     {
-        Log::info('PostController - Delete');
     }
 }
