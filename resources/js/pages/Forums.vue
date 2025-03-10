@@ -30,6 +30,7 @@ const props = withDefaults(defineProps<{
     posts?: Post[];
     post?: Post | null;
     userPost?: Post[] | null;
+    userComments?: Comment[] | null; // Add this line
     createPost?: boolean | null;
 }>(), {
     categories: () => [],
@@ -45,6 +46,7 @@ const props = withDefaults(defineProps<{
     posts: () => [],
     post: null,
     userPost: null,
+    userComments: null, // Add this line
     createPost: null,
 });
 
@@ -174,6 +176,7 @@ watch(() => page.url, (newUrl) => {
             :posts="posts"
             :userPost="userPost"
             :createPost="createPost"
+            :userComments="userComments"
             :errors="$page.props.errors"
             class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl"
         />

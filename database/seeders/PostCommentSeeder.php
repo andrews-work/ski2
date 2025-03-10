@@ -4,21 +4,25 @@ namespace Database\Seeders;
 
 use App\Models\Forums\PostCommentModel;
 use App\Models\Forums\PostModel;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class PostCommentSeeder extends Seeder
 {
     public function run()
     {
-        // Get all posts
-        $posts = PostModel::all();
+        $users = User::all();
 
-        $posts->each(function ($post) {
-            
-            $commentCount = rand(0, 5);
-            PostCommentModel::factory()->count($commentCount)->create([
-                'forum_post_id' => $post->id,
-            ]);
+        $users->each(function ($user) {
+            $posts = PostModel::inRandomOrder()->limit(30)->get();
+
+            $posts->each(function ($post) use ($user) {
+
+                PostCommentModel::factory()->create([
+                    'forum_post_id' => $post->id,
+                    'user_id' => $user->id,
+                ]);
+            });
         });
     }
 }

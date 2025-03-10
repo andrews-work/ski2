@@ -1,10 +1,65 @@
 <script setup lang="ts">
+import { ref, defineEmits } from 'vue';
+import { Link, router } from '@inertiajs/vue3';
 import { type Comment as CommentType } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import Button from '@/components/ui/button/Button.vue';
 
-const { comment } = defineProps<{
+const emit = defineEmits(['comment-updated']);
+
+const { comment, postId } = defineProps<{
   comment: CommentType;
+  postId: number;
 }>();
+
+const editableContent = ref(comment.content);
+
+const isEditing = ref(false);
+
+const enterEditMode = () => {
+  isEditing.value = true;
+};
+
+const cancelEditMode = () => {
+  isEditing.value = false;
+  editableContent.value = comment.content;
+};
+
+const saveChanges = async () => {
+  try {
+    console.log('Sending update request for comment:', comment.id); // Debug log
+    console.log('Request payload:', { content: editableContent.value }); // Debug log
+
+    const response = await router.put(`/comments/${comment.id}`, {
+      content: editableContent.value,
+    });
+
+    console.log('Response from updating comment:', response); // Debug log
+
+    if (!response) {
+      throw new Error('No response received from the server');
+    }
+
+    // Handle Inertia.js response format
+    const updatedComment = response.props?.comment || response.data?.comment;
+
+    if (!updatedComment) {
+      throw new Error('Updated comment data is missing in the response');
+    }
+
+    isEditing.value = false;
+
+    emit('comment-updated', updatedComment);
+
+  } catch (error) {
+    console.error('Error updating comment:', error);
+  }
+};
+
+const deleteComment = () => {
+  if (confirm('Are you sure you want to delete this comment?')) {
+    router.delete(`/comments/${comment.id}`);
+  }
+};
 
 const isValidDate = (date: string) => {
   return !isNaN(new Date(date).getTime());
@@ -29,7 +84,9 @@ const formatDate = (date: string) => {
   const commentDate = new Date(date);
   const day = commentDate.getDate();
   const dayWithSuffix = getDayWithSuffix(day);
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+  ];
   const month = monthNames[commentDate.getMonth()];
   const year = commentDate.getFullYear().toString().slice(-2);
   const hours = commentDate.getHours().toString().padStart(2, '0');
@@ -50,13 +107,66 @@ const getDayWithSuffix = (day: number) => {
 </script>
 
 <template>
-  <div class="p-4 mb-4 border-b border-gray-700">
+  <div class="p-4 mb-6 border-b border-gray-700">
     <div class="flex items-center justify-between">
-      <Link :href="`/forums/posts/users/${comment.user.id}`" class="text-sm text-blue-400 hover:text-gray-300">
+      <Link
+        :href="`/forums/posts/users/${comment.user.id}`"
+        class="text-sm text-blue-400 hover:text-gray-300"
+      >
         {{ comment.user.name }}
       </Link>
       <p class="text-sm text-gray-400">{{ timeAgo(comment.created_at) }}</p>
     </div>
-    <p class="mt-2 text-gray-300">{{ comment.content }}</p>
+
+    <div v-if="isEditing" class="mt-4">
+      <textarea
+        v-model="editableContent"
+        rows="3"
+        class="w-full px-4 py-2 text-gray-300 bg-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      ></textarea>
+      <div class="flex justify-end mt-4 space-x-3">
+        <Button
+          @click="saveChanges"
+          variant="outline"
+          size="default"
+          class="text-green-500 border-green-400"
+        >
+          Save
+        </Button>
+        <Button
+          @click="cancelEditMode"
+          variant="outline"
+          size="default"
+          class="text-gray-400 border-gray-400"
+        >
+          Cancel
+        </Button>
+        <Button
+          @click="deleteComment"
+          variant="outline"
+          size="default"
+          class="text-red-400 border-red-400"
+        >
+          Delete
+        </Button>
+      </div>
+    </div>
+
+    <div v-else>
+      <p class="mt-4 text-gray-300">{{ comment.content }}</p>
+      <div
+        v-if="$page.props.auth.user && $page.props.auth.user.id === comment.user_id"
+        class="flex justify-end mt-4 space-x-3"
+      >
+        <Button
+          @click="enterEditMode"
+          variant="outline"
+          size="default"
+          class="text-blue-500 border-blue-400"
+        >
+          Edit
+        </Button>
+      </div>
+    </div>
   </div>
 </template>

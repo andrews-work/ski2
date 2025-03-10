@@ -3,65 +3,113 @@
 namespace App\Http\Controllers\Forums;
 
 use App\Http\Controllers\Controller;
-use App\Models\Forums\PostModel;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreCommentRequest;
+use App\Services\CommentService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Auth\Access\AuthorizationException;
 use App\Models\Forums\PostCommentModel;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostCommentController extends Controller
 {
+    use AuthorizesRequests;
+
+    protected $commentService;
+
+    public function __construct(CommentService $commentService)
+    {
+        $this->commentService = $commentService;
+    }
+
     public function list($postId)
     {
-        $post = PostModel::with('comments.user')->findOrFail($postId);
-        return response()->json($post->comments);
-    }
-
-    public function create(Request $request, $postId)
-    {
-        $request->validate([
-            'content' => 'required|string',
-        ]);
-
-        $comment = PostCommentModel::create([
-            'user_id' => Auth::id(),
-            'forum_post_id' => $postId,
-            'content' => $request->input('content'),
-        ]);
-
-        return response()->json($comment, 201);
-    }
-
-    public function update(Request $request, $commentId)
-    {
-        $comment = PostCommentModel::findOrFail($commentId);
-
-        // Ensure the authenticated user owns the comment
-        if ($comment->user_id !== Auth::id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+        try {
+            $comments = $this->commentService->getCommentsForPost($postId);
+            return response()->json($comments);
+        } catch (\Exception $e) {
+            Log::error('Error fetching comments: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while fetching comments.'], 500);
         }
+    }
 
-        $request->validate([
-            'content' => 'required|string',
-        ]);
+    public function create(StoreCommentRequest $request, $postId)
+    {
+        try {
+            // Authorize the action
+            $this->authorize('create', PostCommentModel::class);
 
-        $comment->update([
-            'content' => $request->input('content'),
-        ]);
+            // Delegate to the service
+            $comment = $this->commentService->createComment($postId, $request->validated());
+            return response()->json([
+                'message' => 'Comment created successfully!',
+                'comment' => $comment,
+            ]);
+        } catch (AuthorizationException $e) {
+            return response()->json(['message' => $e->getMessage()], 403);
+        } catch (\Exception $e) {
+            Log::error('Error creating comment: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while creating the comment.'], 500);
+        }
+    }
 
-        return response()->json($comment);
+    public function update(StoreCommentRequest $request, $commentId)
+    {
+        Log::info('update');
+        try {
+            $comment = PostCommentModel::findOrFail($commentId);
+
+            $this->authorize('update', $comment);
+
+            $comment = $this->commentService->updateComment($commentId, $request->validated());
+            return response()->json([
+                'message' => 'Comment updated successfully!',
+                'comment' => $comment,
+            ]);
+        } catch (AuthorizationException $e) {
+            return response()->json(['message' => $e->getMessage()], 403);
+        } catch (\Exception $e) {
+            Log::error('Error updating comment: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while updating the comment.'], 500);
+        }
     }
 
     public function delete($commentId)
     {
-        $comment = PostCommentModel::findOrFail($commentId);
+        try {
+            $comment = PostCommentModel::findOrFail($commentId);
 
-        // Ensure the authenticated user owns the comment
-        if ($comment->user_id !== Auth::id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            // Authorize the action
+            $this->authorize('delete', $comment);
+
+            // Delegate to the service
+            $this->commentService->deleteComment($commentId);
+            return response()->json(['message' => 'Comment deleted successfully!']);
+        } catch (AuthorizationException $e) {
+            return response()->json(['message' => $e->getMessage()], 403);
+        } catch (\Exception $e) {
+            Log::error('Error deleting comment: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while deleting the comment.'], 500);
         }
+    }
 
-        $comment->delete();
+    public function userComments($userId)
+    {
+        try {
+            // Fetch comments for the user
+            $comments = PostCommentModel::where('user_id', $userId)
+                ->with('post') // Optionally load the related post
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        return response()->json(['message' => 'Comment deleted']);
+            // Log the comments for debugging
+            Log::info('User Comments:', $comments->toArray());
+
+            return response()->json([
+                'userComments' => $comments,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching user comments: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while fetching user comments.'], 500);
+        }
     }
 }

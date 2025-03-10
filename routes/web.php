@@ -1,38 +1,11 @@
 <?php
 
-use App\Http\Controllers\Forums\ForumsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Forums\CategoryListController;
-use App\Http\Controllers\Forums\ResortsCategoryController;
-use App\Http\Controllers\Forums\PostController;
-use App\Http\Controllers\Forums\PostCommentController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
-
-// posts
-Route::get('/forums/posts/{postId}', [PostController::class, 'single'])->name('posts');
-Route::get('/forums/posts/users/{userId}', [PostController::class, 'userPosts'])->name('userPosts');
-Route::get('/posts/create', [PostController::class, 'showCreatePost'])->name('showCreatePost');
-Route::post('/forums/newPost', [PostController::class, 'createPost'])->name('createPost');
-
-// post comments
-Route::get('/posts/{postId}/comments', [PostCommentController::class, 'list']);
-Route::post('/posts/{postId}/comments', [PostCommentController::class, 'create']);
-Route::put('/comments/{commentId}', [PostCommentController::class, 'update']);
-Route::delete('/comments/{commentId}', [PostCommentController::class, 'delete']);
-
-// forums
-Route::get('/forums', [ForumsController::class, 'index'])->name('forums');
-Route::prefix('/forums/categories/resorts')->group(function () {
-    Route::get('/', [ResortsCategoryController::class, 'showResorts'])->name('forums.categories.resorts');
-    Route::get('/{continentSlug}', [ResortsCategoryController::class, 'showContinent'])->name('forums.categories.resorts.continent');
-    Route::get('/{continentSlug}/{countrySlug}', [ResortsCategoryController::class, 'showCountry'])->name('forums.categories.resorts.country');
-    Route::get('/{continentSlug}/{countrySlug}/{resortSlug}', [ResortsCategoryController::class, 'showResort'])->name('forums.categories.resortsPage');
-});
-Route::get('/forums/categories/{category:slug}', [CategoryListController::class, 'show'])->name('forums.categories.show');
 
 Route::get('/resorts', function () {
     return Inertia::render('Resorts');
@@ -52,7 +25,8 @@ Route::get('/auths/marketplace', function () {
 
 Route::get('dashboard', function () {
     return Inertia::render('auths/Dashboard');
-})->name('auths.dashboard');
+})->middleware(['auth', 'verified'])->name('auths.dashboard');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+require __DIR__.'/forums.php';

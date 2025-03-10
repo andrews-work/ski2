@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Forums\PostCommentModel;
+use App\Models\Forums\PostModel;
+use App\Policies\PostCommentPolicy;
+use App\Policies\PostPolicy;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::policy(PostModel::class, PostPolicy::class);
+        Gate::policy(PostCommentModel::class, PostCommentPolicy::class);
     }
 }
