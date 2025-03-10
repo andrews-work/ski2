@@ -4,15 +4,15 @@ import { Link, router } from '@inertiajs/vue3';
 import { type Comment as CommentType } from '@/types';
 import Button from '@/components/ui/button/Button.vue';
 
-const emit = defineEmits(['comment-updated']);
+const emit = defineEmits(['comment-updated', 'comment-deleted']);
 
 const { comment, postId } = defineProps<{
   comment: CommentType;
   postId: number;
 }>();
+const userId = comment.user ? comment.user.id : null;
 
 const editableContent = ref(comment.content);
-
 const isEditing = ref(false);
 
 const enterEditMode = () => {
@@ -25,39 +25,31 @@ const cancelEditMode = () => {
 };
 
 const saveChanges = async () => {
-  try {
-    console.log('Sending update request for comment:', comment.id); // Debug log
-    console.log('Request payload:', { content: editableContent.value }); // Debug log
+  if (!comment.user || !comment.user.id) {
+    console.error('User not found for this comment.');
+    return;
+  }
 
+  try {
     const response = await router.put(`/comments/${comment.id}`, {
       content: editableContent.value,
     });
 
-    console.log('Response from updating comment:', response); // Debug log
+    comment.content = editableContent.value;
 
-    if (!response) {
-      throw new Error('No response received from the server');
-    }
-
-    // Handle Inertia.js response format
-    const updatedComment = response.props?.comment || response.data?.comment;
-
-    if (!updatedComment) {
-      throw new Error('Updated comment data is missing in the response');
-    }
-
+    emit('comment-updated', comment);
     isEditing.value = false;
-
-    emit('comment-updated', updatedComment);
-
   } catch (error) {
     console.error('Error updating comment:', error);
   }
 };
 
-const deleteComment = () => {
-  if (confirm('Are you sure you want to delete this comment?')) {
-    router.delete(`/comments/${comment.id}`);
+const deletePost = async () => {
+  try {
+    await router.delete(`/comments/${comment.id}`);
+    emit('comment-deleted', comment.id);
+  } catch (error) {
+    console.error('Error deleting comment:', error);
   }
 };
 
@@ -84,9 +76,7 @@ const formatDate = (date: string) => {
   const commentDate = new Date(date);
   const day = commentDate.getDate();
   const dayWithSuffix = getDayWithSuffix(day);
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-  ];
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const month = monthNames[commentDate.getMonth()];
   const year = commentDate.getFullYear().toString().slice(-2);
   const hours = commentDate.getHours().toString().padStart(2, '0');
@@ -110,6 +100,7 @@ const getDayWithSuffix = (day: number) => {
   <div class="p-4 mb-6 border-b border-gray-700">
     <div class="flex items-center justify-between">
       <Link
+        v-if="comment.user"
         :href="`/forums/posts/users/${comment.user.id}`"
         class="text-sm text-blue-400 hover:text-gray-300"
       >
@@ -142,7 +133,7 @@ const getDayWithSuffix = (day: number) => {
           Cancel
         </Button>
         <Button
-          @click="deleteComment"
+          @click="deletePost"
           variant="outline"
           size="default"
           class="text-red-400 border-red-400"

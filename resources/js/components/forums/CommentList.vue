@@ -12,7 +12,9 @@ const props = defineProps<{
 }>();
 
 const isAuthenticated = usePage().props.auth.user !== null;
+
 const newComment = ref('');
+
 const localComments = ref([...props.comments]);
 
 watch(() => props.comments, (newComments) => {
@@ -20,24 +22,39 @@ watch(() => props.comments, (newComments) => {
 }, { deep: true });
 
 const submitNewComment = async () => {
+  if (!newComment.value.trim()) {
+    return;
+  }
   try {
-    const response = await router.post(`/posts/${postId}/comments`, {
+    const response = await router.post(`/posts/${props.postId}/comments`, {
       content: newComment.value,
     });
 
+    if (response && response.comment) {
+      localComments.value.push(response.comment);
+    } else {
+      console.error('Unexpected response structure:', response);
+    }
+
     newComment.value = '';
-
-    localComments.value.push(response.data.comment);
-
   } catch (error) {
     console.error('Error creating comment:', error);
+    if (error.response && error.response.data.message) {
+      alert(`Error: ${error.response.data.message}`);
+    } else {
+      alert('An error occurred while creating the comment.');
+    }
   }
 };
 
-const handleCommentUpdated = (updatedComment) => {
-  const index = localComments.value.findIndex(c => c.id === updatedComment.id);
+const handleCommentDeleted = (commentId: number) => {
+  localComments.value = localComments.value.filter(comment => comment.id !== commentId);
+};
+
+const handleCommentUpdated = (updatedComment: CommentType) => {
+  const index = localComments.value.findIndex(comment => comment.id === updatedComment.id);
   if (index !== -1) {
-    localComments.value.splice(index, 1, updatedComment);
+    localComments.value[index] = updatedComment;
   }
 };
 </script>
@@ -52,6 +69,7 @@ const handleCommentUpdated = (updatedComment) => {
         :key="comment.id"
         :comment="comment"
         :postId="postId"
+        @comment-deleted="handleCommentDeleted"
         @comment-updated="handleCommentUpdated"
       />
     </div>
