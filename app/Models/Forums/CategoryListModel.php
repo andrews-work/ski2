@@ -5,6 +5,7 @@ namespace App\Models\Forums;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\PostFactory;
+use Illuminate\Support\Facades\Log;
 
 class CategoryListModel extends Model
 {
@@ -30,6 +31,6 @@ class CategoryListModel extends Model
 
     public function posts()
     {
-        return $this->hasMany(PostModel::class);
+        return $this->hasMany(PostModel::class, 'category_id');
     }
 }

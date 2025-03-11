@@ -66,6 +66,11 @@ const deletePost = (postId: number) => {
   }
 };
 
+// Log the category when the category link is clicked
+const logCategory = () => {
+  console.log('Category clicked:', category);
+};
+
 // Helper functions for date formatting
 const isValidDate = (date: string) => {
   return !isNaN(new Date(date).getTime());
@@ -143,7 +148,9 @@ const getDayWithSuffix = (day: number) => {
       <!-- Post Metadata -->
       <div class="flex items-center justify-between pb-4 mt-6 space-x-6 border-b border-b-gray-700">
         <p class="text-sm text-gray-400">{{ timeAgo(post.created_at) }}</p>
-        <p class="text-sm text-gray-400 cursor-pointer hover:text-orange-500">{{ category.name }}</p>
+        <Link :href="`/forums/categories/${category.slug}`" @click="logCategory" class="block">
+            <p class="text-sm text-gray-400 cursor-pointer hover:text-orange-500">{{ category.name }}</p>
+        </Link>
       </div>
 
       <!-- Buttons for Post Owner -->

@@ -63,41 +63,41 @@ class PostController extends Controller
     }
 
     public function userPosts($userId)
-{
-    // Fetch user posts
-    $posts = $this->postService->getUserPosts($userId);
+    {
+        // Fetch user posts
+        $posts = $this->postService->getUserPosts($userId);
 
-    // Fetch user comments
-    $comments = PostCommentModel::where('user_id', $userId)
-        ->with('post') // Optionally load the related post
-        ->orderBy('created_at', 'desc')
-        ->get();
+        // Fetch user comments
+        $comments = PostCommentModel::where('user_id', $userId)
+            ->with('post') // Optionally load the related post
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    // Fetch categories and other data
-    $categories = CategoryListModel::whereNull('parent_id')->get();
-    $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
-    $continents = CategoryListModel::where('type', 'continent')->get();
-    $countries = CategoryListModel::where('type', 'country')->get();
-    $resorts = CategoryListModel::where('type', 'resort')->get();
+        // Fetch categories and other data
+        $categories = CategoryListModel::whereNull('parent_id')->get();
+        $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
+        $continents = CategoryListModel::where('type', 'continent')->get();
+        $countries = CategoryListModel::where('type', 'country')->get();
+        $resorts = CategoryListModel::where('type', 'resort')->get();
 
-    // Return Inertia response with both posts and comments
-    return Inertia::render('Forums', [
-        'userPost' => $posts,
-        'userComments' => $comments, // Ensure this is passed
-        'categories' => $categories,
-        'subcategories' => $subcategories,
-        'continents' => $continents,
-        'countries' => $countries,
-        'resorts' => $resorts,
-        'continent' => null,
-        'country' => null,
-        'resort' => null,
-        'subcategory' => null,
-        'category' => null,
-        'posts' => $posts,
-        'post' => null,
-    ]);
-}
+        // Return Inertia response with both posts and comments
+        return Inertia::render('Forums', [
+            'userPost' => $posts,
+            'userComments' => $comments, // Ensure this is passed
+            'categories' => $categories,
+            'subcategories' => $subcategories,
+            'continents' => $continents,
+            'countries' => $countries,
+            'resorts' => $resorts,
+            'continent' => null,
+            'country' => null,
+            'resort' => null,
+            'subcategory' => null,
+            'category' => null,
+            'posts' => $posts,
+            'post' => null,
+        ]);
+    }
 
     public function showCreatePost()
     {

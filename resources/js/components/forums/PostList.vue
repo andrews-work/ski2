@@ -3,15 +3,12 @@ import { Post, Category } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 
-const { posts, categories } = defineProps<{
+const { posts } = defineProps<{
   posts: Post[];
-  categories: Category[];
 }>();
 
 onMounted(() => {
   console.log('Posts List Mounted');
-//   console.log('Posts Data:', posts);
-//   console.log('Categories Data:', categories);
 });
 
 const truncateContent = (content: string, wordLimit: number) => {
@@ -52,6 +49,10 @@ const timeAgo = (date: string) => {
 
   return formatDate(date);
 };
+
+const logCategory = (categorySlug: string) => {
+  console.log('Category clicked:', categorySlug);
+};
 </script>
 
 <template>
@@ -75,7 +76,9 @@ const timeAgo = (date: string) => {
                             <p class="text-sm text-gray-400 hover:text-orange-300">{{ post.user.name }}</p>
                         </Link>
                         <p class="text-xs text-gray-500">{{ timeAgo(post.created_at) }}</p>
-                        <p class="text-sm text-gray-400 hover:text-purple-400">{{ post.category.name }}</p>
+                        <Link :href="`/forums/categories/${post.category.slug}`" @click="logCategory(post.category.slug)" class="block">
+                            <p class="text-sm text-gray-400 cursor-pointer hover:text-orange-500">{{ post.category.name }}</p>
+                        </Link>
                     </div>
                 </Link>
             </li>

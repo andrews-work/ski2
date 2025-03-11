@@ -14,6 +14,7 @@ import CountryPage from '@/components/forums/CountryPage.vue';
 import ResortPage from '@/components/forums/ResortPage.vue';
 import SearchBar from '@/components/forums/Search.vue';
 import CreatePost from '@/components/forums/PostCreate.vue';
+import PostCategoryList from '@/components/forums/PostCategoryList.vue';
 
 // Define props with default values
 const props = withDefaults(defineProps<{
@@ -105,6 +106,7 @@ const currentComponent = computed(() => {
     if (props.country) return CountryPage;
     if (props.continent) return ContinentsPage;
     if (props.category) return CategoryRouter;
+    if (props.category) return PostCategoryList;
     return null;
 });
 

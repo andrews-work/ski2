@@ -33,4 +33,37 @@ class CategoryListController extends Controller
         Log::info('CategoryListController - getCategories');
         return CategoryListModel::whereNull('parent_id')->get();
     }
+
+    public function fullPath($categoryPath)
+    {
+        Log::info('category: ' . $categoryPath);
+
+        $category = CategoryListModel::where('slug', $categoryPath)->first();
+
+        if (!$category) {
+            Log::error('Category not found: ' . $categoryPath);
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        // Get the full path for the category
+        $fullPath = $this->getFullPath($category);
+
+        Log::info('Full path for category: ' . $fullPath);
+
+        return Inertia::location($fullPath);
+    }
+
+    public function getFullPath($category, $path = '')
+    {
+        // Prepend the current category's slug to the path
+        $path = $category->slug . ($path ? '/' . $path : '');
+
+        // If the category has a parent, recursively build the path
+        if ($category->parent) {
+            return $this->getFullPath($category->parent, $path);
+        }
+
+        // Return the full path with the /forums/categories prefix
+        return '/forums/categories/' . $path;
+    }
 }

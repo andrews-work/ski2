@@ -39,4 +39,6 @@ Route::prefix('/forums/categories/resorts')->group(function () {
     Route::get('/{continentSlug}/{countrySlug}', [ResortsCategoryController::class, 'showCountry'])->name('forums.categories.resorts.country');
     Route::get('/{continentSlug}/{countrySlug}/{resortSlug}', [ResortsCategoryController::class, 'showResort'])->name('forums.categories.resortsPage');
 });
+Route::get('/forums/categories/{categoryPath}', [CategoryListController::class, 'fullPath'])->name('forums.categories.fullPath');
+
 Route::get('/forums/categories/{category:slug}', [CategoryListController::class, 'show'])->name('forums.categories.show');
