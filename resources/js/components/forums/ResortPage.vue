@@ -1,3 +1,4 @@
+<!-- resortsPage -->
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { type Category } from '@/types';

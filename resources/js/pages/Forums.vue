@@ -15,6 +15,8 @@ import ResortPage from '@/components/forums/ResortPage.vue';
 import SearchBar from '@/components/forums/Search.vue';
 import CreatePost from '@/components/forums/PostCreate.vue';
 import PostCategoryList from '@/components/forums/PostCategoryList.vue';
+import EventsCategory from '@/components/forums/EventsCategory.vue';
+import GearCategory from '@/components/forums/GearCategory.vue';
 
 // Define props with default values
 const props = withDefaults(defineProps<{
@@ -31,7 +33,7 @@ const props = withDefaults(defineProps<{
     posts?: Post[];
     post?: Post | null;
     userPost?: Post[] | null;
-    userComments?: Comment[] | null; // Add this line
+    userComments?: Comment[] | null;
     createPost?: boolean | null;
 }>(), {
     categories: () => [],
@@ -47,7 +49,7 @@ const props = withDefaults(defineProps<{
     posts: () => [],
     post: null,
     userPost: null,
-    userComments: null, // Add this line
+    userComments: null,
     createPost: null,
 });
 
@@ -98,13 +100,72 @@ const breadcrumbs = [
     },
 ];
 
+const gearCategories = [
+    { name: 'Skis', slug: 'skis' },
+    { name: 'Race', slug: 'race' },
+    { name: 'All Mountain', slug: 'all-mountain' },
+    { name: 'Park', slug: 'park' },
+    { name: 'Free Ride', slug: 'free-ride' },
+    { name: 'Backcountry', slug: 'backcountry' },
+    { name: 'X-Country', slug: 'x-country' },
+    { name: 'Big Mountain', slug: 'big-mountain' },
+    { name: 'Powder', slug: 'powder' },
+    { name: 'Snowboards', slug: 'snowboards' },
+    { name: 'Split Boards', slug: 'split-boards' },
+    { name: 'Powder Snowboards', slug: 'powder-snowboards' },
+    { name: 'Park Snowboards', slug: 'park-snowboards' },
+    { name: 'Gloves', slug: 'gloves' },
+    { name: 'Inners', slug: 'inners' },
+    { name: 'Outers', slug: 'outers' },
+    { name: 'Clothes', slug: 'clothes' },
+    { name: 'Socks', slug: 'socks' },
+    { name: 'Jackets', slug: 'jackets' },
+    { name: 'Pants', slug: 'pants' },
+    { name: 'Thermals', slug: 'thermals' },
+    { name: 'Hoodies', slug: 'hoodies' },
+    { name: 'Boots', slug: 'boots' },
+    { name: 'Après Boots', slug: 'apres-boots' },
+    { name: 'Ski Boots', slug: 'ski-boots' },
+    { name: 'Snowboard Boots', slug: 'snowboard-boots' },
+    { name: 'Bindings', slug: 'bindings' },
+    { name: 'Brands', slug: 'brands' },
+    { name: 'Poles', slug: 'poles' },
+    { name: 'Goggles', slug: 'goggles' },
+];
+
+const eventsCategories = [
+    { name: 'Free Ride World Tour', slug: 'free-ride-world-tour' },
+    { name: 'Alpine', slug: 'alpine' },
+    { name: 'Park', slug: 'park' },
+    { name: 'X-country', slug: 'x-country' }
+];
+
 const currentComponent = computed(() => {
+    console.log('Current Component Props:', {
+        category: props.category,
+        subcategory: props.subcategory,
+        posts: props.posts,
+    });
+
     if (props.createPost) return CreatePost;
     if (props.userPost) return UserPostPage;
     if (props.post) return PostPage;
     if (props.resort) return ResortPage;
     if (props.country) return CountryPage;
     if (props.continent) return ContinentsPage;
+
+    // Check if the category is "gear" or a subcategory of "gear"
+    if (props.category && (props.category.slug === 'gear' || gearCategories.some(gear => gear.slug === props.category.slug))) {
+        console.log('Rendering GearCategory');
+        return GearCategory;
+    }
+
+    // Check if the category is a subcategory of "events"
+    if (props.category && eventsCategories.some(event => event.slug === props.category.slug)) {
+        console.log('Rendering EventsCategory');
+        return EventsCategory;
+    }
+
     if (props.category) return CategoryRouter;
     if (props.category) return PostCategoryList;
     return null;
@@ -115,8 +176,16 @@ watch(() => page.url, (newUrl) => {
         resetPost();
     }
 });
-</script>
 
+onMounted(() => {
+    console.log('Forums component mounted with props:', {
+        category: props.category,
+        subcategory: props.subcategory,
+        posts: props.posts,
+    });
+});
+
+</script>
 <template>
     <Head title="Forums" />
     <AppLayout :breadcrumbs="breadcrumbs" class="">
@@ -136,7 +205,7 @@ watch(() => page.url, (newUrl) => {
                 </div>
                 <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 sm:order-5 md:order-3">
                     <!-- 5 -->
-                    <h1>Most commented threads</h1>
+                    <h1>Most active resorts in last day, week, month, year</h1>
                 </div>
             </div>
 

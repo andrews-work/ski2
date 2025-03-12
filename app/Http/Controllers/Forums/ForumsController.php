@@ -11,38 +11,43 @@ use Illuminate\Support\Facades\Log;
 class ForumsController extends Controller
 {
     public function index()
-    {
-        Log::info('ForumsController - called');
+{
+    Log::info('ForumsController - called');
 
-        $categories = CategoryListModel::whereNull('parent_id')->get();
-        $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
-        $continents = CategoryListModel::where('type', 'continent')->get();
-        $countries = CategoryListModel::where('type', 'country')->get();
-        $resorts = CategoryListModel::where('type', 'resort')->get();
+    $categories = CategoryListModel::whereNull('parent_id')->get();
+    $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
+    $continents = CategoryListModel::where('type', 'continent')->get();
+    $countries = CategoryListModel::where('type', 'country')->get();
+    $resorts = CategoryListModel::where('type', 'resort')->get();
 
-        $posts = PostModel::with(['user', 'category'])
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
+    $posts = PostModel::with(['user', 'category'])
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
 
-        Log::info('Forums Page - rendering with ' . $categories->count() . ' categories, ' . $subcategories->count() . ' subcategories, and ' . $posts->count() . ' posts');
+    Log::info('Forums Page - Categories Count: ' . $categories->count());
+    Log::info('Forums Page - Subcategories Count: ' . $subcategories->count());
 
-        return Inertia::render('Forums', [
-            'categories' => $categories,
-            'subcategories' => $subcategories,
-            'continents' => $continents,
-            'countries' => $countries,
-            'resorts' => $resorts,
-            'posts' => $posts,
-            'category' => null,
-            'subcategory' => null,
-            'continent' => null,
-            'country' => null,
-            'resort' => null,
-            'post' => null,
-            'userPost' => null,
-            'createPost' => null,
-        ]);
-    }
+    // Log details for category/subcategory for debugging
+    Log::info('Categories Data:', $categories->toArray());
+    Log::info('Subcategories Data:', $subcategories->toArray());
+
+    return Inertia::render('Forums', [
+        'categories' => $categories,
+        'subcategories' => $subcategories,
+        'continents' => $continents,
+        'countries' => $countries,
+        'resorts' => $resorts,
+        'posts' => $posts,
+        'category' => null,
+        'subcategory' => null,
+        'continent' => null,
+        'country' => null,
+        'resort' => null,
+        'post' => null,
+        'userPost' => null,
+        'createPost' => null,
+    ]);
+}
 
 }

@@ -13,7 +13,6 @@ use App\Models\Forums\CategoryListModel;
 use App\Models\Forums\PostCommentModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-
 class PostController extends Controller
 {
     use AuthorizesRequests;
@@ -64,26 +63,22 @@ class PostController extends Controller
 
     public function userPosts($userId)
     {
-        // Fetch user posts
         $posts = $this->postService->getUserPosts($userId);
 
-        // Fetch user comments
         $comments = PostCommentModel::where('user_id', $userId)
-            ->with('post') // Optionally load the related post
+            ->with('post')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Fetch categories and other data
         $categories = CategoryListModel::whereNull('parent_id')->get();
         $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
         $continents = CategoryListModel::where('type', 'continent')->get();
         $countries = CategoryListModel::where('type', 'country')->get();
         $resorts = CategoryListModel::where('type', 'resort')->get();
 
-        // Return Inertia response with both posts and comments
         return Inertia::render('Forums', [
             'userPost' => $posts,
-            'userComments' => $comments, // Ensure this is passed
+            'userComments' => $comments,
             'categories' => $categories,
             'subcategories' => $subcategories,
             'continents' => $continents,
@@ -121,10 +116,8 @@ class PostController extends Controller
     public function createPost(PostRequest $request)
     {
         try {
-            // Authorize the action
             $this->authorize('create', PostModel::class);
 
-            // Delegate to the service
             $post = $this->postService->createPost($request->validated());
 
             return redirect()->route('posts', ['postId' => $post->id]);
@@ -143,10 +136,8 @@ class PostController extends Controller
         try {
             $post = PostModel::findOrFail($postId);
 
-            // Authorize the action
             $this->authorize('update', $post);
 
-            // Delegate to the service
             $post = $this->postService->updatePost($postId, $request->validated());
 
             return redirect()->route('posts', ['postId' => $post->id]);
@@ -163,10 +154,8 @@ class PostController extends Controller
         try {
             $post = PostModel::findOrFail($postId);
 
-            // Authorize the action
             $this->authorize('delete', $post);
 
-            // Delegate to the service
             $this->postService->deletePost($postId);
 
             return redirect()->route('forums')->with('success', 'Post deleted successfully!');

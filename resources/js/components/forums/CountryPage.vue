@@ -1,3 +1,4 @@
+<!-- countryPage - list of resorts -->
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { Link } from '@inertiajs/vue3';

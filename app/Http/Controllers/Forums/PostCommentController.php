@@ -130,37 +130,6 @@ class PostCommentController extends Controller
         }
     }
 
-        //     public function update(StoreCommentRequest $request, $commentId)
-    // {
-    //     Log::info('Update method started', ['commentId' => $commentId]);
-
-    //     try {
-    //         $comment = PostCommentModel::findOrFail($commentId);
-    //         Log::info('Found comment', ['comment' => $comment]);
-
-    //         $this->authorize('update', $comment);
-    //         Log::info('Authorization passed for updating comment', ['commentId' => $commentId]);
-
-    //         $comment = $this->commentService->updateComment($commentId, $request->validated());
-    //         Log::info('Comment updated', ['updatedComment' => $comment]);
-
-    //         return response()->json([
-    //             'comment' => $comment,
-    //         ]);
-
-    //     } catch (AuthorizationException $e) {
-    //         Log::error('Authorization error while updating comment', ['commentId' => $commentId, 'error' => $e->getMessage()]);
-    //         return response()->json(['message' => $e->getMessage()], 403);
-    //     } catch (\Exception $e) {
-    //         Log::error('Error updating comment', [
-    //             'commentId' => $commentId,
-    //             'error' => $e->getMessage(),
-    //             'stack' => $e->getTraceAsString()
-    //         ]);
-    //         return response()->json(['message' => 'An error occurred while updating the comment.'], 500);
-    //     }
-    // }
-
     public function delete($commentId)
     {
         try {

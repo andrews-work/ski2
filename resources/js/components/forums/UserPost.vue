@@ -86,7 +86,7 @@ const toggleTab = (tab: 'posts' | 'comments') => {
 <template>
   <div class="flex flex-col items-center p-8 text-white">
     <!-- Header (Sticky) -->
-    <div class="sticky top-0 z-10 w-full max-w-4xl py-12 space-y-8 border-b border-b-gray-700">
+    <div class="sticky top-0 z-10 w-full max-w-4xl py-12 space-y-8 border-b bg-inherit border-b-gray-700">
       <h1 class="text-4xl font-bold text-center text-red-500">{{ userPost?.[0]?.user?.name }}</h1>
 
       <!-- Tabs to toggle between posts and comments -->

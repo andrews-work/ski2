@@ -45,7 +45,6 @@ class CategoryListController extends Controller
             return response()->json(['error' => 'Category not found'], 404);
         }
 
-        // Get the full path for the category
         $fullPath = $this->getFullPath($category);
 
         Log::info('Full path for category: ' . $fullPath);
@@ -55,15 +54,12 @@ class CategoryListController extends Controller
 
     public function getFullPath($category, $path = '')
     {
-        // Prepend the current category's slug to the path
         $path = $category->slug . ($path ? '/' . $path : '');
 
-        // If the category has a parent, recursively build the path
         if ($category->parent) {
             return $this->getFullPath($category->parent, $path);
         }
 
-        // Return the full path with the /forums/categories prefix
         return '/forums/categories/' . $path;
     }
 }

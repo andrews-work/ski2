@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { Category } from '@/types';
 import { Link } from '@inertiajs/vue3';
 
@@ -6,6 +7,10 @@ defineProps<{
     category: Category;
     subcategories: Category[];
 }>();
+
+onMounted(() => {
+    console.log('Events mounted');
+});
 </script>
 
 <template>
@@ -13,7 +18,7 @@ defineProps<{
         <h2 class="mb-6 text-2xl font-bold text-center text-gray-200">{{ category.name }}</h2>
         <p class="mt-2 text-sm text-gray-200">{{ category.description }}</p>
 
-        <div v-if="subcategories.length">
+        <div v-if="subcategories && subcategories.length">
             <ul class="mt-4 space-y-4">
                 <li
                     v-for="subcategory in subcategories"
