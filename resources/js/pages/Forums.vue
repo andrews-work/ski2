@@ -17,6 +17,7 @@ import CreatePost from '@/components/forums/PostCreate.vue';
 import PostCategoryList from '@/components/forums/PostCategoryList.vue';
 import EventsCategory from '@/components/forums/EventsCategory.vue';
 import GearCategory from '@/components/forums/GearCategory.vue';
+import GearNestedSubcategory from '@/components/forums/GearNestedSubcategory.vue';
 
 // Define props with default values
 const props = withDefaults(defineProps<{
@@ -154,16 +155,16 @@ const currentComponent = computed(() => {
     if (props.country) return CountryPage;
     if (props.continent) return ContinentsPage;
 
-    // Check if the category is "gear" or a subcategory of "gear"
-    if (props.category && (props.category.slug === 'gear' || gearCategories.some(gear => gear.slug === props.category.slug))) {
-        console.log('Rendering GearCategory');
-        return GearCategory;
-    }
-
     // Check if the category is a subcategory of "events"
     if (props.category && eventsCategories.some(event => event.slug === props.category.slug)) {
         console.log('Rendering EventsCategory');
         return EventsCategory;
+    }
+
+    // Check if the category is a subcategory of "gear"
+    if (props.category && gearCategories.some(gear => gear.slug === props.category.slug)) {
+        console.log('Rendering GearCategory');
+        return GearCategory;
     }
 
     if (props.category) return CategoryRouter;

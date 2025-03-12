@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { Link } from '@inertiajs/vue3';
 import { type Post, type Category } from '@/types';
 
-const { category, subcategories, posts } = defineProps<{
+const { category, posts } = defineProps<{
     category: Category;
-    subcategories?: Category[];
-    posts?: Post[];
+    posts: Post[];
 }>();
 
 const loading = ref(true);
 
 onMounted(() => {
-    console.log('Gear Category - mounted');
+    console.log('Gear Nested Subcategory - mounted');
 
     setTimeout(() => {
         loading.value = false;
@@ -27,23 +25,8 @@ onMounted(() => {
             <h1 class="text-4xl font-bold text-center ">{{ category?.name }}</h1>
         </div>
 
-        <!-- Display subcategories if available -->
-        <div v-if="subcategories && subcategories.length && !posts" class="w-full max-w-4xl mt-8 space-y-8">
-            <ul class="mt-4 space-y-4">
-                <li
-                    v-for="subcategory in subcategories"
-                    :key="subcategory.id"
-                    class="p-4 border border-gray-400 rounded-lg"
-                >
-                    <Link :href="`/forums/categories/gear/${category.slug}/${subcategory.slug}`" class="block w-full">
-                        {{ subcategory.name }}
-                    </Link>
-                </li>
-            </ul>
-        </div>
-
         <!-- Display posts if available -->
-        <div v-else-if="category && !loading && posts?.length" class="w-full max-w-4xl mt-8 space-y-8">
+        <div v-if="category && !loading && posts?.length" class="w-full max-w-4xl mt-8 space-y-8">
             <div v-for="post in posts" :key="post.id" class="p-6 border border-transparent rounded-lg shadow-lg hover:border-gray-600">
                 <div class="flex items-center justify-between pb-4 mt-6 space-x-6">
                     <p class="text-sm text-gray-400">{{ post.created_at }}</p>

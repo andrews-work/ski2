@@ -55,6 +55,7 @@ Route::prefix('/forums/categories/events')->group(function () {
 Route::prefix('/forums/categories/gear')->group(function () {
     Route::get('/', [GearCategoryController::class, 'showGear'])->name('forums.categories.gear');
     Route::get('/{subcategorySlug}', [GearCategoryController::class, 'showSubcategory'])->name('forums.categories.gear.subcategory');
+    Route::get('/{subcategorySlug}/{nestedSubcategorySlug}', [GearCategoryController::class, 'showNestedSubcategory'])->name('forums.categories.gear.nestedSubcategory');
 });
 
 // Technique category

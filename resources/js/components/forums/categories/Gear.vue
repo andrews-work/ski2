@@ -20,7 +20,7 @@ defineProps<{
                     :key="subcategory.id"
                     class="p-4 border border-gray-400 rounded-lg"
                 >
-                    <Link :href="`/forums/categories/${category.slug}/${subcategory.slug}`" class="block w-full">
+                    <Link :href="`/forums/categories/gear/${subcategory.slug}`" class="block w-full">
                         {{ subcategory.name }}
                     </Link>
                 </li>
