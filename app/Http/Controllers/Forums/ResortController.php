@@ -150,39 +150,30 @@ class ResortController extends Controller
             'resortSlug' => $resortSlug,
         ]);
 
-        // Fetch the resort category
         $resortsCategory = CategoryListModel::where('slug', 'resorts')->firstOrFail();
         Log::info('Resorts category fetched:', ['resortsCategory' => $resortsCategory]);
 
-        // Fetch the continent
         $continent = CategoryListModel::where('slug', $continentSlug)
             ->where('parent_id', $resortsCategory->id)
             ->where('type', 'continent')
             ->firstOrFail();
-        Log::info('Continent fetched:', ['continent' => $continent]);
 
-        // Fetch the country
         $country = CategoryListModel::where('slug', $countrySlug)
             ->where('parent_id', $continent->id)
             ->where('type', 'country')
             ->firstOrFail();
-        Log::info('Country fetched:', ['country' => $country]);
 
-        // Fetch the resort
         $resort = CategoryListModel::where('slug', $resortSlug)
             ->where('parent_id', $country->id)
             ->where('type', 'resort')
             ->firstOrFail();
-        Log::info('Resort fetched:', ['resort' => $resort]);
 
-        // Fetch all posts for the resort
         $posts = PostModel::with('user')
             ->where('category_id', $resort->id)
             ->orderBy('created_at', 'desc')
             ->get();
         Log::info('Posts fetched for resort:', ['posts' => $posts]);
 
-        // Return the data to the Vue component
         return inertia('Forums', [
             'category' => $resort,
             'posts' => $posts,
