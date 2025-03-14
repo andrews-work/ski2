@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { Category } from '@/types';
-import { onMounted, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 
 defineProps<{
@@ -9,11 +9,7 @@ defineProps<{
 }>();
 
 onMounted(() => {
-    console.log('Technique Category - mounted');
-
-    setTimeout(() => {
-        loading.value = false;
-    }, 300);
+    console.log('Other mounted');
 });
 </script>
 
@@ -29,7 +25,7 @@ onMounted(() => {
                     :key="subcategory.id"
                     class="p-4 border border-gray-400 rounded-lg"
                 >
-                    <Link :href="`/forums/categories/${category.slug}/${subcategory.slug}`" class="block w-full">
+                    <Link :href="`/forums/categories/other/${subcategory.slug}`" class="block w-full">
                         {{ subcategory.name }}
                     </Link>
                 </li>

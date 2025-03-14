@@ -4,8 +4,7 @@ namespace App\Models\Forums;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Database\Factories\PostFactory;
-use Illuminate\Support\Facades\Log;
+use App\Models\Forums\TopicModel;
 
 class CategoryListModel extends Model
 {
@@ -13,11 +12,6 @@ class CategoryListModel extends Model
 
     protected $table = 'category_list';
     protected $fillable = ['name', 'description', 'parent_id', 'slug', 'type'];
-
-    protected static function newFactory()
-    {
-        return PostFactory::new();
-    }
 
     public function parent()
     {
@@ -32,5 +26,10 @@ class CategoryListModel extends Model
     public function posts()
     {
         return $this->hasMany(PostModel::class, 'category_id');
+    }
+
+    public function topics()
+    {
+        return $this->belongsToMany(TopicModel::class, 'resort_topics', 'resort_id', 'topic_id');
     }
 }

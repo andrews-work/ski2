@@ -19,7 +19,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl">
             <div class="grid gap-4 auto-rows-min md:grid-cols-3">
                 <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
+                    <h1></h1>
                 </div>
                 <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
@@ -34,3 +34,24 @@ const breadcrumbs: BreadcrumbItem[] = [
         </div>
     </AppLayout>
 </template>
+
+<!-- needs
+
+way to select resort
+resort page
+
+
+-->
+
+
+
+<!-- resort info
+
+weather
+location
+distnace from nearest major city
+run info
+chairlift info
+
+
+-->

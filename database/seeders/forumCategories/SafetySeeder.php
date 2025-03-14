@@ -17,9 +17,9 @@ class SafetySeeder extends Seeder
         ]);
 
         CategoryListModel::create([
-            'name' => 'Rules',
+            'name' => 'Mountain Safety',
             'parent_id' => $safety->id,
-            'slug' => 'rules',
+            'slug' => 'mountain-safety',
             'type' => 'safety',
         ]);
 
@@ -29,12 +29,30 @@ class SafetySeeder extends Seeder
             'slug' => 'avalanche-safety',
             'type' => 'safety',
         ]);
-
+        CategoryListModel::create([
+            'name' => 'Resort Safety',
+            'parent_id' => $safety->id,
+            'slug' => 'resort-safety',
+            'type' => 'safety',
+        ]);
         CategoryListModel::create([
             'name' => 'First Aid',
             'parent_id' => $safety->id,
             'slug' => 'first-aid',
             'type' => 'safety',
         ]);
+        CategoryListModel::create([
+            'name' => 'Equipment Safety',
+            'parent_id' => $safety->id,
+            'slug' => 'equipment-safety',
+            'type' => 'safety',
+        ]);
+        CategoryListModel::create([
+            'name' => 'Weather',
+            'parent_id' => $safety->id,
+            'slug' => 'weather',
+            'type' => 'safety',
+        ]);
     }
+
 }

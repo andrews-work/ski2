@@ -1,0 +1,82 @@
+<!-- AllPosts.vue -->
+<script setup lang="ts">
+import { type Post, type Topic, type Category } from '@/types';
+import { computed, onMounted } from 'vue';
+import { Link } from '@inertiajs/vue3';
+import PostList from '@/components/forums/resort/PostList.vue';
+
+const props = defineProps<{
+    posts: Post[];
+    topic?: Topic | null;
+    category: Category;
+    continentSlug: string;
+    countrySlug: string;
+    resortSlug: string;
+}>();
+
+const filteredPosts = computed(() => {
+    if (!props.posts) return [];
+    if (!props.topic) return props.posts;
+    return props.posts.filter(post => post.topic_id === props.topic?.id);
+});
+
+const truncateContent = (content: string, wordLimit: number) => {
+    const words = content.split(' ');
+    return words.slice(0, wordLimit).join(' ') + (words.length > wordLimit ? '...' : '');
+};
+
+const formatDate = (date: string) => {
+  const postDate = new Date(date);
+  const day = postDate.getDate();
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const month = monthNames[postDate.getMonth()];
+  const year = postDate.getFullYear().toString().slice(-2);
+
+  return `${day} ${month}, ${year}`;
+};
+
+const timeAgo = (date: string) => {
+  const postDate = new Date(date);
+  const now = new Date();
+  const diffInMs = now.getTime() - postDate.getTime();
+  const diffInHours = diffInMs / (1000 * 60 * 60);
+
+  if (diffInHours < 24) {
+    return `${Math.floor(diffInHours)} hours ago`;
+  }
+
+  return formatDate(date);
+};
+
+onMounted(() => {
+    console.log('AllPosts - posts:', props.posts);
+});
+</script>
+
+<template>
+    <div class="h-full p-4 rounded-lg shadow-md">
+        <Link :href="`/forums/categories/resorts/${continentSlug}/${countrySlug}/${resortSlug}/all`">
+            <h2 class="mb-4 text-2xl font-bold text-center text-white">All Posts</h2>
+            <ul class="space-y-4">
+                <li
+                    v-for="post in filteredPosts"
+                    :key="post.id"
+                    class="p-4 mb-6 transition duration-200 rounded-lg shadow-lg hover:border hover:border-white"
+                >
+                    <Link :href="`/forums/posts/${post.id}`" class="block">
+                        <h1 class="text-xl font-semibold text-white truncate">{{ truncateContent(post.title, 5) }}</h1>
+                        <p class="my-2 text-sm text-gray-300">{{ truncateContent(post.content, 15) }}</p>
+
+                        <div class="flex items-center justify-between mb-2 space-x-4">
+                            <Link v-if="post.user && post.user.id" :href="`/forums/posts/users/${post.user.id}`" class="block">
+                                <p class="text-sm text-gray-400 hover:text-orange-300">{{ post.user.name }}</p>
+                            </Link>
+                            <p v-else class="text-sm text-gray-400">Anonymous</p>
+                            <p class="text-xs text-gray-500">{{ timeAgo(post.created_at) }}</p>
+                        </div>
+                    </Link>
+                </li>
+            </ul>
+        </Link>
+    </div>
+</template>

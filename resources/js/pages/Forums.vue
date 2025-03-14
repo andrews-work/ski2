@@ -14,10 +14,14 @@ import CountryPage from '@/components/forums/CountryPage.vue';
 import ResortPage from '@/components/forums/ResortPage.vue';
 import SearchBar from '@/components/forums/Search.vue';
 import CreatePost from '@/components/forums/PostCreate.vue';
-import PostCategoryList from '@/components/forums/PostCategoryList.vue';
-import EventsCategory from '@/components/forums/EventsCategory.vue';
-import GearCategory from '@/components/forums/GearCategory.vue';
-import GearNestedSubcategory from '@/components/forums/GearNestedSubcategory.vue';
+import PostListCategory from '@/components/forums/PostListCategory.vue';
+import EventsCategory from '@/components/forums/EventsCategoryPage.vue';
+import GearCategory from '@/components/forums/GearCategoryPage.vue';
+import GearNestedSubcategory from '@/components/forums/GearNestedSubcategoryPage.vue';
+import TechniqueCategory from '@/components/forums/TechniqueCategoryPage.vue';
+import SafetyCategory from '@/components/forums/SafetyCategoryPage.vue';
+import OtherCategory from '@/components/forums/OtherCategoryPage.vue';
+import ResortPostList from '@/components/forums/resort/PostList.vue';
 
 // Define props with default values
 const props = withDefaults(defineProps<{
@@ -36,6 +40,9 @@ const props = withDefaults(defineProps<{
     userPost?: Post[] | null;
     userComments?: Comment[] | null;
     createPost?: boolean | null;
+    continentSlug?: string;
+    countrySlug?: string;
+    resortSlug?: string;
 }>(), {
     categories: () => [],
     category: null,
@@ -52,8 +59,10 @@ const props = withDefaults(defineProps<{
     userPost: null,
     userComments: null,
     createPost: null,
+    continentSlug: '',
+    countrySlug: '',
+    resortSlug: '',
 });
-
 const page = usePage();
 
 const selectedCategory = ref<Category | null>(null);
@@ -138,7 +147,36 @@ const eventsCategories = [
     { name: 'Free Ride World Tour', slug: 'free-ride-world-tour' },
     { name: 'Alpine', slug: 'alpine' },
     { name: 'Park', slug: 'park' },
-    { name: 'X-country', slug: 'x-country' }
+    { name: 'X-country', slug: 'x-country' },
+];
+
+const techniqueCategories = [
+    { name: 'Groomers', slug: 'groomers' },
+    { name: 'Skiing', slug: 'skiing' },
+    { name: 'Trees', slug: 'trees' },
+    { name: 'Powder', slug: 'powder' },
+    { name: 'Cliffs', slug: 'cliffs' },
+    { name: 'Snowboarding', slug: 'snowboarding' },
+    { name: 'Cross Country', slug: 'crosscountry' },
+    { name: 'Backcountry', slug: 'backcountry' },
+    { name: 'Race', slug: 'race' },
+];
+
+const safetyCategories = [
+    { name: 'Avalanche Safety', slug: 'avalanche-safety' },
+    { name: 'Mountain Safety', slug: 'mountain-safety' },
+    { name: 'Resort Safety', slug: 'resort-safety' },
+    { name: 'Equipment Safety', slug: 'equipment-safety' },
+    { name: 'First Aid', slug: 'first-aid' },
+    { name: 'Weather', slug: 'weather' },
+];
+
+const otherCategories = [
+    { name: 'Suggestions', slug: 'suggestions' },
+    { name: 'Epic Pass', slug: 'epic-pass' },
+    { name: 'Independant', slug: 'independant' },
+    { name: 'Ikon Pass', slug: 'ikon-pass' },
+    { name: 'Independant v Ikon v Epic', slug: 'great-debate' },
 ];
 
 const currentComponent = computed(() => {
@@ -167,8 +205,25 @@ const currentComponent = computed(() => {
         return GearCategory;
     }
 
+    // Check if the category is a subcategory of "technique"
+    if (props.category && techniqueCategories.some(technique => technique.slug === props.category.slug)) {
+        console.log('Rendering TechniqueCategory');
+        return TechniqueCategory;
+    }
+
+    // Check if the category is a subcategory of "safety"
+    if (props.category && safetyCategories.some(safety => safety.slug === props.category.slug)) {
+        console.log('Rendering SafetyCategory');
+        return SafetyCategory;
+    }
+    if (props.category && otherCategories.some(other => other.slug === props.category.slug)) {
+        console.log('Rendering OtherCategory');
+        return OtherCategory;
+    }
+
     if (props.category) return CategoryRouter;
     if (props.category) return PostCategoryList;
+    if (props.category) return ResortPostList;
     return null;
 });
 
@@ -185,8 +240,8 @@ onMounted(() => {
         posts: props.posts,
     });
 });
-
 </script>
+
 <template>
     <Head title="Forums" />
     <AppLayout :breadcrumbs="breadcrumbs" class="">
@@ -250,6 +305,9 @@ onMounted(() => {
             :createPost="createPost"
             :userComments="userComments"
             :errors="$page.props.errors"
+            :continentSlug="continentSlug"
+            :countrySlug="countrySlug"
+            :resortSlug="resortSlug"
             class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl"
         />
 

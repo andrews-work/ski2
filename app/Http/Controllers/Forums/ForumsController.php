@@ -27,8 +27,6 @@ class ForumsController extends Controller
 
     Log::info('Forums Page - Categories Count: ' . $categories->count());
     Log::info('Forums Page - Subcategories Count: ' . $subcategories->count());
-
-    // Log details for category/subcategory for debugging
     Log::info('Categories Data:', $categories->toArray());
     Log::info('Subcategories Data:', $subcategories->toArray());
 

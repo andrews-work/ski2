@@ -10,6 +10,7 @@ use Database\Seeders\forumCategories\EventsSeeder;
 use Database\Seeders\forumCategories\TechniqueSeeder;
 use Database\Seeders\forumCategories\SafetySeeder;
 use Database\Seeders\forumCategories\OtherSeeder;
+use Database\Seeders\forumCategories\TopicsSeeder;
 
 class CategoryListSeeder extends Seeder
 {
@@ -25,6 +26,7 @@ class CategoryListSeeder extends Seeder
             TechniqueSeeder::class,
             SafetySeeder::class,
             OtherSeeder::class,
+            TopicsSeeder::class,
         ]);
     }
 }

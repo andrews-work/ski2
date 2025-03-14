@@ -34,3 +34,57 @@ const breadcrumbs: BreadcrumbItem[] = [
         </div>
     </AppLayout>
 </template>
+
+
+<!-- components -->
+
+<!--
+- history
+- sell
+- categories list
+- category page
+
+-->
+
+
+<!-- pages -->
+<!--
+
+- marketplace
+- pay form (if guest, ask if they want to create an account with email)
+-->
+
+
+
+<!-- needs -->
+<!--
+
+- sell button
+
+- categories
+    - skis
+    - snowboards
+    - boots
+    - jackets
+    - pants
+    - goggles
+    - hoodies
+    - poles
+    - backpacks
+    - avi gear
+- shopping cart modal
+- view cart (login to buy)
+- pay form - multistep
+    - address
+    - pay
+    - confirm
+        - email invoice
+- if logged in, show history
+    - wishlist
+    - ordered
+    - complete orders
+
+
+
+-->
+

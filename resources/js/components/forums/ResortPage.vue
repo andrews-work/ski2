@@ -1,88 +1,123 @@
-<!-- resortsPage -->
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { type Category } from '@/types';
+import { type Category, type Post, type Topic } from '@/types';
+import { computed, onMounted } from 'vue';
+import { Link } from '@inertiajs/vue3';
+
 import ResortInfo from '@/components/forums/resort/Info.vue';
-import LocalEvents from '@/components/forums/resort/LocalEvents.vue';
 import Hero from '@/components/forums/resort/Hero.vue';
-import Mountain from '@/components/forums/resort/Mountain.vue';
-import Restaurants from '@/components/forums/resort/Restaurants.vue';
-import Rentals from '@/components/forums/resort/Rentals.vue';
-import News from '@/components/forums/resort/News.vue';
-import Party from '@/components/forums/resort/Party.vue';
-import LiveChat from '@/components/forums/resort/LiveChat.vue';
-import RecentComments from '@/components/forums/resort/RecentComments.vue';
 import RecentPosts from '@/components/forums/resort/RecentPosts.vue';
-import Travel from '@/components/forums/resort/Travel.vue';
+import AllPosts from '@/components/forums/resort/AllPosts.vue';
+
+
+onMounted(() => {
+    console.log('ResortPage - mounted');
+});
 
 const props = defineProps<{
     resort: Category;
-    resorts: Category;
-    country: Category;
+    topic?: Topic | null;
+    posts?: Post[];
+    continentSlug: string;
+    countrySlug: string;
+    resortSlug: string;
 }>();
 
-onMounted(() => {
-    console.log('resort mounted - (resortPage)');
-    console.log('Resort:', props.resort);
-    console.log('Resorts:', props.resorts);
+const filteredPosts = computed(() => {
+    if (!props.posts) return [];
+    if (!props.topic) return props.posts;
+    return props.posts.filter(post => post.topic_id === props.topic?.id);
 });
-
 </script>
 
 <template>
     <div v-if="resort">
-        <div class="flex items-center justify-center h-1/3">
-            <Hero :resort="resort" :country="country"/>
+        <div class="flex items-center justify-center h-96">
+            <Hero :resort="resort" :country="resort.parent?.parent ?? {}" />
         </div>
 
-        <div class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl">
+        <div class="flex flex-col flex-1 gap-4 rounded-xl">
+            <div class="relative h-16 overflow-hidden bg-gray-900 border rounded-xl border-sidebar-border/70">
+                <ResortInfo />
+            </div>
+        </div>
 
-            <div class="grid gap-4 auto-rows-min md:grid-cols-3">
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <ResortInfo />
-                </div>
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <LocalEvents />
-                </div>
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <Mountain />
-                </div>
+        <div class="grid gap-4 auto-rows-min md:grid-cols-3">
+            <div class="relative overflow-hidden border md:overflow-y-auto aspect-video rounded-xl border-sidebar-border/70">
+                <RecentPosts :posts="filteredPosts" :topic="topic" />
             </div>
-            <div class="grid gap-4 auto-rows-min md:grid-cols-3">
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <Restaurants />
-                </div>
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <Travel />
-                </div>
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <Rentals />
-                </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Recent Comments</h3>
             </div>
-            <div class="grid gap-4 auto-rows-min md:grid-cols-3">
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <News />
-                </div>
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <Party />
-                </div>
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <h1>non skiing activities</h1>
-                </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Live Chat</h3>
             </div>
-            <div class="grid gap-4 auto-rows-min md:grid-cols-3">
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <LiveChat />
-                </div>
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <RecentPosts />
-                </div>
-                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
-                    <RecentComments />
-                </div>
+        </div>
+
+        <div class="grid gap-4 auto-rows-min md:grid-cols-3">
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Travel</h3>
             </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Restaurants</h3>
+            </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Rentals</h3>
+            </div>
+        </div>
+
+        <div class="grid gap-4 auto-rows-min md:grid-cols-3">
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Bars & Clubs</h3>
+            </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Rentals</h3>
+            </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Shops</h3>
+            </div>
+        </div>
+
+        <div class="grid gap-4 auto-rows-min md:grid-cols-3">
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Local Events</h3>
+            </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>News</h3>
+            </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Mountain</h3>
+            </div>
+        </div>
+
+        <div class="grid gap-4 auto-rows-min md:grid-cols-3">
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>General</h3>
+            </div>
+
+            <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70">
+                <h3>Non-Skiing Activities</h3>
+            </div>
+
+            <div class="relative overflow-hidden border md:overflow-y-auto aspect-video rounded-xl border-sidebar-border/70">
+                <AllPosts
+                    :category="resort"
+                    :posts="posts"
+                    :continentSlug="continentSlug"
+                    :countrySlug="countrySlug"
+                    :resortSlug="resortSlug"
+                />
+            </div>
+        </div>
     </div>
-</div>
+
     <div v-else class="text-center text-red-500">
         <p>Resort under construction or not available.</p>
     </div>

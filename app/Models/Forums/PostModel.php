@@ -19,6 +19,7 @@ class PostModel extends Model
         'title',
         'content',
         'category_id',
+        'topic_id',
     ];
 
     protected static function newFactory()
@@ -28,16 +29,21 @@ class PostModel extends Model
 
     public function user()
     {
-        return $this -> belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function category()
     {
-        return $this -> belongsTo(CategoryListModel::class);
+        return $this->belongsTo(CategoryListModel::class);
+    }
+
+    public function topic()
+    {
+        return $this->belongsTo(TopicModel::class);
     }
 
     public function comments()
     {
-        return $this -> hasMany(PostCommentModel::class, 'forum_post_id');
+        return $this->hasMany(PostCommentModel::class, 'forum_post_id');
     }
 }

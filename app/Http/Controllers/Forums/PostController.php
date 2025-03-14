@@ -11,6 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Inertia\Inertia;
 use App\Models\Forums\CategoryListModel;
 use App\Models\Forums\PostCommentModel;
+use App\Models\Forums\TopicModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostController extends Controller
@@ -166,4 +167,6 @@ class PostController extends Controller
             return response()->json(['message' => 'An error occurred while deleting the post.'], 500);
         }
     }
+
+    
 }

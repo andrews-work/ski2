@@ -17,16 +17,23 @@ class OtherSeeder extends Seeder
         ]);
 
         CategoryListModel::create([
-            'name' => 'Ikon',
+            'name' => 'Suggestions',
             'parent_id' => $other->id,
-            'slug' => 'icon',
+            'slug' => 'suggestions',
             'type' => 'other',
         ]);
 
         CategoryListModel::create([
-            'name' => 'Vail',
+            'name' => 'Ikon Pass',
             'parent_id' => $other->id,
-            'slug' => 'vail',
+            'slug' => 'ikon-pass',
+            'type' => 'other',
+        ]);
+
+        CategoryListModel::create([
+            'name' => 'Epic Pass',
+            'parent_id' => $other->id,
+            'slug' => 'epic-pass',
             'type' => 'other',
         ]);
 

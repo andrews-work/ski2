@@ -1,35 +1,58 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import { Category } from '@/types';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
-// Define props
 const props = defineProps<{
     categories: Category[];
     subcategories: Category[];
-    errors: Record<string, string>; // Validation errors passed from the backend
+    errors: Record<string, string>;
 }>();
 
-// Form data
 const form = ref({
     title: '',
     content: '',
     category_id: null,
 });
 
-// Selected category, continent, country, and resort
 const selectedCategory = ref<Category | null>(null);
 const selectedContinent = ref<Category | null>(null);
 const selectedCountry = ref<Category | null>(null);
 const selectedResort = ref<Category | null>(null);
+const selectedNestedSubcategory = ref<Category | null>(null);
 
-// Filtered subcategories
 const continents = ref<Category[]>([]);
 const countries = ref<Category[]>([]);
 const resorts = ref<Category[]>([]);
+const nestedSubcategories = ref<Category[]>([]);
 
-// Handle category selection (e.g., "Resorts")
+const subCategoryLabel = computed(() => {
+    if (selectedCategory.value?.name === 'Resorts') {
+        if (selectedContinent.value) {
+            if (selectedCountry.value) {
+                if (selectedResort.value) {
+                    return 'Select a topic';
+                } else {
+                    return 'Select a resort';
+                }
+            } else {
+                return 'Select a country';
+            }
+        } else {
+            return 'Select a continent';
+        }
+    } else if (selectedCategory.value?.name === 'AnotherCategory') {
+        if (selectedContinent.value) {
+            return 'Select a state';
+        } else {
+            return 'Select a region';
+        }
+    } else {
+        return 'Select a subcategory';
+    }
+});
+
 const handleCategorySelect = (category: Category | null) => {
     if (category) {
         continents.value = props.subcategories.filter(sub => sub.parent_id === category.id);
@@ -40,15 +63,15 @@ const handleCategorySelect = (category: Category | null) => {
         selectedCategory.value = null;
         form.value.category_id = null;
     }
-    // Reset child selections
     selectedContinent.value = null;
     selectedCountry.value = null;
     selectedResort.value = null;
+    selectedNestedSubcategory.value = null;
     countries.value = [];
     resorts.value = [];
+    nestedSubcategories.value = [];
 };
 
-// Handle continent selection (e.g., "North America")
 const handleContinentSelect = (continent: Category | null) => {
     if (continent) {
         countries.value = props.subcategories.filter(sub => sub.parent_id === continent.id);
@@ -59,13 +82,13 @@ const handleContinentSelect = (continent: Category | null) => {
         selectedContinent.value = null;
         form.value.category_id = selectedCategory.value?.id || null;
     }
-    // Reset child selections
     selectedCountry.value = null;
     selectedResort.value = null;
+    selectedNestedSubcategory.value = null;
     resorts.value = [];
+    nestedSubcategories.value = [];
 };
 
-// Handle country selection (e.g., "USA")
 const handleCountrySelect = (country: Category | null) => {
     if (country) {
         resorts.value = props.subcategories.filter(sub => sub.parent_id === country.id);
@@ -76,22 +99,34 @@ const handleCountrySelect = (country: Category | null) => {
         selectedCountry.value = null;
         form.value.category_id = selectedContinent.value?.id || selectedCategory.value?.id || null;
     }
-    // Reset child selections
     selectedResort.value = null;
+    selectedNestedSubcategory.value = null;
+    nestedSubcategories.value = [];
 };
 
-// Handle resort selection (e.g., "Aspen")
 const handleResortSelect = (resort: Category | null) => {
     if (resort) {
+        nestedSubcategories.value = props.subcategories.filter(sub => sub.parent_id === resort.id);
         selectedResort.value = resort;
         form.value.category_id = resort.id;
     } else {
+        nestedSubcategories.value = [];
         selectedResort.value = null;
         form.value.category_id = selectedCountry.value?.id || selectedContinent.value?.id || selectedCategory.value?.id || null;
     }
+    selectedNestedSubcategory.value = null;
 };
 
-// Submit the form
+const handleNestedSubcategorySelect = (nestedSubcategory: Category | null) => {
+    if (nestedSubcategory) {
+        selectedNestedSubcategory.value = nestedSubcategory;
+        form.value.category_id = nestedSubcategory.id;
+    } else {
+        selectedNestedSubcategory.value = null;
+        form.value.category_id = selectedResort.value?.id || selectedCountry.value?.id || selectedContinent.value?.id || selectedCategory.value?.id || null;
+    }
+};
+
 const submitForm = async () => {
     try {
         await router.post('/forums/newPost', form.value);
@@ -105,29 +140,19 @@ const submitForm = async () => {
 <template>
     <div class="flex items-center justify-center">
         <div class="w-full max-w-5xl p-8 text-white shadow-xl rounded-xl">
-            <!-- Back to Forum Link -->
             <div>
                 <Link :href="`/forums`" class="block">
                     <p class="mt-8 mb-4 text-blue-400 cursor-pointer hover:text-gray-300">Back to Forum</p>
                 </Link>
             </div>
-
-            <!-- Page Title -->
             <h1 class="mt-8 mb-4 text-xl font-extrabold text-gray-400 md:text-5xl">Create Post</h1>
-
-            <!-- Page Description -->
             <p class="mb-[5vh] leading-relaxed text-gray-300 md:text-lg">Fill out the details below to create a new post.</p>
-
-            <!-- Validation Errors -->
             <div v-if="Object.keys(errors).length > 0" class="mb-4 text-red-500">
                 <ul>
                     <li v-for="(error, field) in errors" :key="field">{{ error }}</li>
                 </ul>
             </div>
-
-            <!-- Form -->
             <form @submit.prevent="submitForm" class="space-y-4">
-                <!-- Category Selection -->
                 <div class="flex items-center justify-center gap-4">
                     <div>
                         <DropdownMenu>
@@ -143,13 +168,11 @@ const submitForm = async () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-
-                    <!-- Continent Selection -->
                     <div v-if="continents.length > 0">
                         <DropdownMenu>
                             <DropdownMenuTrigger>
                                 <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {{ selectedContinent?.name || 'Select a continent' }}
+                                    {{ selectedContinent?.name || subCategoryLabel }}
                                 </button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
@@ -159,13 +182,11 @@ const submitForm = async () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-
-                    <!-- Country Selection -->
                     <div v-if="countries.length > 0">
                         <DropdownMenu>
                             <DropdownMenuTrigger>
                                 <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {{ selectedCountry?.name || 'Select a country' }}
+                                    {{ selectedCountry?.name || subCategoryLabel }}
                                 </button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
@@ -175,13 +196,11 @@ const submitForm = async () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-
-                    <!-- Resort Selection -->
                     <div v-if="resorts.length > 0">
                         <DropdownMenu>
                             <DropdownMenuTrigger>
                                 <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {{ selectedResort?.name || 'Select a resort' }}
+                                    {{ selectedResort?.name || subCategoryLabel }}
                                 </button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
@@ -191,9 +210,21 @@ const submitForm = async () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
+                    <div v-if="nestedSubcategories.length > 0">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    {{ selectedNestedSubcategory?.name || subCategoryLabel }}
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuItem v-for="nestedSubcategory in nestedSubcategories" :key="nestedSubcategory.id" @click="handleNestedSubcategorySelect(nestedSubcategory)">
+                                    {{ nestedSubcategory.name }}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
-
-                <!-- Title Input -->
                 <div>
                     <input
                         type="text"
@@ -203,8 +234,6 @@ const submitForm = async () => {
                         placeholder="Enter the post title"
                     />
                 </div>
-
-                <!-- Content Textarea -->
                 <div>
                     <textarea
                         id="content"
@@ -214,8 +243,6 @@ const submitForm = async () => {
                         placeholder="Enter the post content"
                     ></textarea>
                 </div>
-
-                <!-- Form Actions -->
                 <div class="flex items-center justify-between pt-4 mt-6 space-x-4">
                     <Link :href="`/forums`" class="px-4 py-2 text-white bg-transparent border border-orange-800 rounded-lg hover:bg-orange-800">
                         Cancel

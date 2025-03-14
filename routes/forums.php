@@ -12,6 +12,7 @@ use App\Http\Controllers\Forums\GearCategoryController;
 use App\Http\Controllers\Forums\TechniqueCategoryController;
 use App\Http\Controllers\Forums\OtherCategoryController;
 use App\Http\Controllers\Forums\SafetyCategoryController;
+use App\Http\Controllers\Forums\ResortController;
 
 // Forum categories
 Route::get('/forums', [ForumsController::class, 'index'])->name('forums');
@@ -39,11 +40,17 @@ Route::get('/posts/{post}/comments', [PostCommentController::class, 'list'])->na
 
 // Resorts category
 Route::prefix('/forums/categories/resorts')->group(function () {
+
+    // routes to get to a resort
     Route::get('/', [ResortsCategoryController::class, 'showResorts'])->name('forums.categories.resorts');
     Route::get('/{continentSlug}', [ResortsCategoryController::class, 'showContinent'])->name('forums.categories.resorts.continent');
     Route::get('/{continentSlug}/{countrySlug}', [ResortsCategoryController::class, 'showCountry'])->name('forums.categories.resorts.country');
-    Route::get('/{continentSlug}/{countrySlug}/{resortSlug}', [ResortsCategoryController::class, 'showResort'])->name('forums.categories.resortsPage');
+    Route::get('/{continentSlug}/{countrySlug}/{resortSlug}', [ResortController::class, 'showResort'])->name('forums.categories.resortsPage');
 });
+
+// routes for a resort
+Route::get('/forums/categories/resorts/{resortId}/topics/{topicId?}', [ResortController::class, 'getPostsByResortAndTopic']);
+Route::get('/forums/categories/resorts/{continentSlug}/{countrySlug}/{resortSlug}/all', [ResortController::class, 'showAllPosts'])->name('forums.categories.resorts.allPosts');
 
 // Events category
 Route::prefix('/forums/categories/events')->group(function () {

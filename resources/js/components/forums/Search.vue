@@ -20,9 +20,9 @@ function handleCreatePostClick(event: Event) {
             class="px-4 py-2 text-green-400 bg-transparent rounded-lg hover:text-white hover:bg-green-900"
             @click="handleCreatePostClick"
         >
-            Create Post
+            Create
         </Link>
-        <h1>random</h1>
+        <h1>All </h1>
         <input
             type="text"
             placeholder="Search..."

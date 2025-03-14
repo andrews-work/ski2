@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Forums;
 
 use App\Http\Controllers\Controller;
 use App\Models\Forums\CategoryListModel;
+use App\Models\Forums\PostModel;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -98,43 +99,5 @@ class ResortsCategoryController extends Controller
         ]);
     }
 
-    public function showResort($continentSlug, $countrySlug, $resortSlug)
-    {
-        Log::info('ResortsCategoryController - showResort called', [
-            'continentSlug' => $continentSlug,
-            'countrySlug' => $countrySlug,
-            'resortSlug' => $resortSlug,
-        ]);
 
-        $resortsCategory = CategoryListModel::where('slug', 'resorts')->firstOrFail();
-        Log::info('Resorts category fetched:', ['resortsCategory' => $resortsCategory]);
-
-        $continent = CategoryListModel::where('slug', $continentSlug)
-            ->where('parent_id', $resortsCategory->id)
-            ->where('type', 'continent')
-            ->firstOrFail();
-        Log::info('Continent fetched:', ['continent' => $continent]);
-
-        $country = CategoryListModel::where('slug', $countrySlug)
-            ->where('parent_id', $continent->id)
-            ->where('type', 'country')
-            ->firstOrFail();
-        Log::info('Country fetched:', ['country' => $country]);
-
-        $resort = CategoryListModel::where('slug', $resortSlug)
-            ->where('parent_id', $country->id)
-            ->where('type', 'resort')
-            ->firstOrFail();
-        Log::info('Resort fetched:', ['resort' => $resort]);
-
-        $categories = $this->getCategories();
-
-        return inertia('Forums', [
-            'category' => $resortsCategory,
-            'continent' => $continent,
-            'country' => $country,
-            'resort' => $resort,
-            'categories' => $categories,
-        ]);
-    }
 }
