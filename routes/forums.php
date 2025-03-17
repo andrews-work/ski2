@@ -14,8 +14,6 @@ use App\Http\Controllers\Forums\OtherCategoryController;
 use App\Http\Controllers\Forums\SafetyCategoryController;
 use App\Http\Controllers\Forums\ResortController;
 
-// General Routes (Anyone can access)
-Route::get('/forums', [ForumsController::class, 'index'])->name('forums');
 
 // ResortPage
 Route::prefix('/forums/categories/resorts/{continentSlug}/{countrySlug}/{resortSlug}')->group(function () {
@@ -36,10 +34,10 @@ Route::prefix('/forums/categories/resorts/{continentSlug}/{countrySlug}/{resortS
     Route::get('/suggestions/posts', [ResortController::class, 'getSuggestionsPosts'])->name('forums.categories.resorts.suggestionsPosts');
 
 
-        // show pages
-        Route::get('/all', [ResortController::class, 'showAllPosts'])->name('forums.categories.resorts.allPosts');
-        Route::get('/travel', [ResortController::class, 'showTravel'])->name('forums.categories.resorts.travel');
-        Route::get('/restaurants', [ResortController::class, 'showRestaurant'])->name('forums.categories.resorts.restaurants');
+    // show pages w/ data
+    Route::get('/all', [ResortController::class, 'showAllPosts'])->name('forums.categories.resorts.allPosts');
+    Route::get('/travel', [ResortController::class, 'showTravel'])->name('forums.categories.resorts.travel');
+    Route::get('/restaurants', [ResortController::class, 'showRestaurant'])->name('forums.categories.resorts.restaurants');
 });
 
 
@@ -56,7 +54,7 @@ Route::get('/posts/{post}/comments', [PostCommentController::class, 'list'])->na
 
 
 
-// auth
+// auth crud post/comments
 Route::middleware('auth')->group(function () {
     // Posts
     Route::get('/posts/create', [PostController::class, 'showCreatePost'])->name('showCreatePost');
@@ -77,7 +75,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-// Categories
+// Category navigation
 Route::prefix('/forums/categories')->group(function () {
     // Resorts
     Route::prefix('/resorts')->group(function () {

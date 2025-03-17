@@ -24,6 +24,7 @@ class ForumsController extends Controller
         ->orderBy('created_at', 'desc')
         ->take(10)
         ->get();
+    Log::info('posts'. $posts);
 
     Log::info('Forums Page - Categories Count: ' . $categories->count());
     Log::info('Forums Page - Subcategories Count: ' . $subcategories->count());
