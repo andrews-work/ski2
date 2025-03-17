@@ -7,22 +7,22 @@ const props = defineProps<{
     continentSlug: string;
     countrySlug: string;
     resortSlug: string;
-    rentalsPosts: any[];
+    eventsPosts: any[];
 }>();
 </script>
 
 <template>
     <div class="h-full p-4 rounded-lg shadow-md">
-        <Link :href="`/forums/categories/travel/${continentSlug}/${countrySlug}/${resortSlug}/rental/posts`">
-            <h2 class="mb-4 text-2xl font-bold text-center text-yellow-200 hover:text-white">Rentals</h2>
+        <Link :href="`/forums/categories/travel/${continentSlug}/${countrySlug}/${resortSlug}/events/posts`">
+            <h2 class="mb-4 text-2xl font-bold text-center text-teal-200 hover:text-white">Events</h2>
 
-            <div v-if="rentalsPosts.length === 0" class="text-center text-gray-400">
-                No travel posts found.
+            <div v-if="eventsPosts.length === 0" class="text-center text-gray-400">
+                No events posts found.
             </div>
 
             <ul v-else class="space-y-4">
                 <li
-                    v-for="post in rentalsPosts"
+                    v-for="post in eventsPosts"
                     :key="post.id"
                     class="p-4 mb-6 transition duration-200 rounded-lg shadow-lg hover:border hover:border-white"
                 >

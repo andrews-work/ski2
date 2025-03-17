@@ -46,7 +46,6 @@ class CategoryListController extends Controller
         }
 
         $fullPath = $this->getFullPath($category);
-
         Log::info('Full path for category: ' . $fullPath);
 
         return Inertia::location($fullPath);

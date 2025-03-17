@@ -14,6 +14,7 @@ class PostService
             'title' => $data['title'],
             'content' => $data['content'],
             'category_id' => $data['category_id'],
+            'topic_id' => $data['topic_id'] ?? null,
         ]);
     }
 

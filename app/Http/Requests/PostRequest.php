@@ -18,6 +18,7 @@ class PostRequest extends FormRequest
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:category_list,id',
+            'topic_id' => 'nullable|exists:topics,id',
         ];
     }
 

@@ -1,3 +1,4 @@
+<!-- ForumRouter.vue -->
 <script setup lang="ts">
 import { computed } from 'vue';
 import { type Category, type Post } from '@/types';
@@ -13,6 +14,7 @@ import TechniqueCategory from '@/components/forums/TechniqueCategoryPage.vue';
 import SafetyCategory from '@/components/forums/SafetyCategoryPage.vue';
 import OtherCategory from '@/components/forums/OtherCategoryPage.vue';
 import CategoryRouter from '@/components/forums/CategoryRouter.vue';
+import ResortTopicList from '@/components/forums/resort/ResortTopicList.vue';
 import {
     gearCategories,
     eventsCategories,
@@ -30,6 +32,13 @@ const props = defineProps<{
     post?: Post | null;
     userPost?: Post[] | null;
     createPost?: boolean | null;
+    posts?: Post[];
+    topic?: Post | null;
+    continentSlug?: string;
+    countrySlug?: string;
+    resortSlug?: string;
+    loading?: boolean;
+    error?: string | null;
 }>();
 
 const componentMap = {
@@ -48,6 +57,10 @@ const componentMap = {
 };
 
 const currentComponent = computed(() => {
+
+    if (window.location.pathname.includes('/all')) {
+        return ResortTopicList;
+    }
     if (props.createPost) return componentMap.createPost;
     if (props.userPost) return componentMap.userPost;
     if (props.post) return componentMap.post;
@@ -71,6 +84,13 @@ const currentComponent = computed(() => {
 <template>
     <component
         :is="currentComponent"
-        v-bind="$props"
+        v-if="currentComponent === ResortTopicList"
+    />
+    <component
+        :is="currentComponent"
+        v-else
+            v-bind="$props"
+            :loading="loading"
+            :error="error"
     />
 </template>

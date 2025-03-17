@@ -1,4 +1,3 @@
-<!-- resorts page shows list of continents -->
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { Category } from '@/types';

@@ -14,7 +14,6 @@ class ResortsSeeder extends Seeder
 {
     public function run()
     {
-        // Create the main Resorts category
         $resorts = CategoryListModel::create([
             'name' => 'Resorts',
             'description' => 'Find and discuss ski resorts around the world.',
@@ -22,7 +21,6 @@ class ResortsSeeder extends Seeder
             'type' => 'category',
         ]);
 
-        // Run the continent seeders
         $this -> call (NorthAmericaSeeder::class);
         $this -> call (EuropeSeeder::class);
         $this -> call (AustraliaNewZealandSeeder::class);

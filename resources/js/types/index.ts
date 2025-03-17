@@ -41,6 +41,10 @@ export interface Category {
     slug: string;
     description: string;
     parent_id?: number | null;
+    topic: {
+        name: string;
+        id: number;
+    };
 }
 
 export interface Post {
@@ -56,6 +60,10 @@ export interface Post {
         slug: string;
     };
     created_at: string;
+    topic: {
+        name: string;
+        id: number;
+    };
 }
 
 export interface Comment {

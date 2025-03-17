@@ -1,13 +1,17 @@
+<!-- Forums.vue -->
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import { type Category, type Post } from '@/types';
+import { ref } from 'vue';
+import { usePage, Head } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import ForumRouter from '@/components/forums/ForumRouter.vue';
+import SearchBar from '@/components/forums/Search.vue';
 import CategoryList from '@/components/forums/CategoryList.vue';
 import PostList from '@/components/forums/PostList.vue';
-import SearchBar from '@/components/forums/Search.vue';
-import ForumRouter from '@/components/forums/ForumRouter.vue';
+
+// state
+const loading = ref(false);
+const error = ref<string | null>(null);
 
 const props = defineProps<{
     categories?: Category[];
@@ -22,6 +26,8 @@ const props = defineProps<{
     resort?: Category | null;
     posts?: Post[];
     post?: Post | null;
+    topics?: Post[];
+    topic?: Post | null;
     userPost?: Post[] | null;
     userComments?: Comment[] | null;
     createPost?: boolean | null;
@@ -32,13 +38,17 @@ const props = defineProps<{
 
 const page = usePage();
 const breadcrumbs = [{ title: 'Forums', href: '/forums' }];
+
+const isDefaultForumsPage = computed(() => {
+    return !props.category && !props.post && !props.userPost && !props.createPost && !window.location.pathname.includes('/all');
+});
 </script>
 
 <template>
     <Head title="Forums" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <!-- Default Forums Page -->
-        <div v-if="!category && !post && !userPost && !createPost" class="flex flex-col flex-1 gap-4 p-4 rounded-xl">
+        <div v-if="isDefaultForumsPage" class="flex flex-col flex-1 gap-4 p-4 rounded-xl">
             <!-- Top Row -->
             <div class="grid grid-flow-row gap-4 auto-rows-min md:grid-cols-3 md:grid-rows-1 sm:grid-cols-1 sm:grid-rows-6">
                 <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 sm:order-6 md:order-1">
@@ -71,6 +81,11 @@ const breadcrumbs = [{ title: 'Forums', href: '/forums' }];
         </div>
 
         <!-- Dynamic Rendering -->
-        <ForumRouter v-else v-bind="$props" />
+        <ForumRouter
+            v-else
+                v-bind="$props"
+                :loading="loading"
+                :error="error"
+        />
     </AppLayout>
 </template>

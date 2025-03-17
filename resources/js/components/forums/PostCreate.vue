@@ -2,18 +2,22 @@
 import { ref, computed } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import { Category } from '@/types';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import ReusableDropdown from '@/components/app/ReusableDropdown.vue';
 
 const props = defineProps<{
     categories: Category[];
     subcategories: Category[];
-    errors: Record<string, string>;
+    topics: Category[];
+    errors?: Record<string, string>;
 }>();
+
+const errors = computed(() => props.errors || {});
 
 const form = ref({
     title: '',
     content: '',
     category_id: null,
+    topic_id: null,
 });
 
 const selectedCategory = ref<Category | null>(null);
@@ -21,41 +25,23 @@ const selectedContinent = ref<Category | null>(null);
 const selectedCountry = ref<Category | null>(null);
 const selectedResort = ref<Category | null>(null);
 const selectedNestedSubcategory = ref<Category | null>(null);
+const selectedTopic = ref<Category | null>(null);
 
 const continents = ref<Category[]>([]);
 const countries = ref<Category[]>([]);
 const resorts = ref<Category[]>([]);
 const nestedSubcategories = ref<Category[]>([]);
+const topics = ref<Category[]>([]);
 
-const subCategoryLabel = computed(() => {
-    if (selectedCategory.value?.name === 'Resorts') {
-        if (selectedContinent.value) {
-            if (selectedCountry.value) {
-                if (selectedResort.value) {
-                    return 'Select a topic';
-                } else {
-                    return 'Select a resort';
-                }
-            } else {
-                return 'Select a country';
-            }
-        } else {
-            return 'Select a continent';
-        }
-    } else if (selectedCategory.value?.name === 'AnotherCategory') {
-        if (selectedContinent.value) {
-            return 'Select a state';
-        } else {
-            return 'Select a region';
-        }
-    } else {
-        return 'Select a subcategory';
-    }
-});
+const validationError = ref<string | null>(null);
+
+const getSubcategories = (parentId: number | null) => {
+    return props.subcategories.filter(sub => sub.parent_id === parentId);
+};
 
 const handleCategorySelect = (category: Category | null) => {
     if (category) {
-        continents.value = props.subcategories.filter(sub => sub.parent_id === category.id);
+        continents.value = getSubcategories(category.id);
         selectedCategory.value = category;
         form.value.category_id = category.id;
     } else {
@@ -67,14 +53,16 @@ const handleCategorySelect = (category: Category | null) => {
     selectedCountry.value = null;
     selectedResort.value = null;
     selectedNestedSubcategory.value = null;
+    selectedTopic.value = null;
     countries.value = [];
     resorts.value = [];
     nestedSubcategories.value = [];
+    topics.value = [];
 };
 
 const handleContinentSelect = (continent: Category | null) => {
     if (continent) {
-        countries.value = props.subcategories.filter(sub => sub.parent_id === continent.id);
+        countries.value = getSubcategories(continent.id);
         selectedContinent.value = continent;
         form.value.category_id = continent.id;
     } else {
@@ -85,13 +73,15 @@ const handleContinentSelect = (continent: Category | null) => {
     selectedCountry.value = null;
     selectedResort.value = null;
     selectedNestedSubcategory.value = null;
+    selectedTopic.value = null;
     resorts.value = [];
     nestedSubcategories.value = [];
+    topics.value = [];
 };
 
 const handleCountrySelect = (country: Category | null) => {
     if (country) {
-        resorts.value = props.subcategories.filter(sub => sub.parent_id === country.id);
+        resorts.value = getSubcategories(country.id);
         selectedCountry.value = country;
         form.value.category_id = country.id;
     } else {
@@ -101,20 +91,35 @@ const handleCountrySelect = (country: Category | null) => {
     }
     selectedResort.value = null;
     selectedNestedSubcategory.value = null;
+    selectedTopic.value = null;
     nestedSubcategories.value = [];
+    topics.value = [];
 };
 
 const handleResortSelect = (resort: Category | null) => {
     if (resort) {
-        nestedSubcategories.value = props.subcategories.filter(sub => sub.parent_id === resort.id);
+        nestedSubcategories.value = getSubcategories(resort.id);
         selectedResort.value = resort;
         form.value.category_id = resort.id;
+        topics.value = props.topics;
     } else {
         nestedSubcategories.value = [];
         selectedResort.value = null;
         form.value.category_id = selectedCountry.value?.id || selectedContinent.value?.id || selectedCategory.value?.id || null;
+        topics.value = [];
     }
     selectedNestedSubcategory.value = null;
+    selectedTopic.value = null;
+};
+
+const handleTopicSelect = (topic: Category | null) => {
+    if (topic) {
+        selectedTopic.value = topic;
+        form.value.topic_id = topic.id;
+    } else {
+        selectedTopic.value = null;
+        form.value.topic_id = null;
+    }
 };
 
 const handleNestedSubcategorySelect = (nestedSubcategory: Category | null) => {
@@ -127,7 +132,43 @@ const handleNestedSubcategorySelect = (nestedSubcategory: Category | null) => {
     }
 };
 
+const validateForm = () => {
+    if (!selectedCategory.value) {
+        validationError.value = 'Please select a category.';
+        return false;
+    }
+
+    let currentCategory = selectedCategory.value;
+    let currentSubcategories = getSubcategories(currentCategory.id);
+
+    while (currentSubcategories.length > 0) {
+        const selectedSubcategory = [selectedContinent.value, selectedCountry.value, selectedResort.value, selectedNestedSubcategory.value].find(
+            sub => sub?.parent_id === currentCategory.id
+        );
+
+        if (!selectedSubcategory) {
+            validationError.value = 'Please select all required subcategories.';
+            return false;
+        }
+
+        currentCategory = selectedSubcategory;
+        currentSubcategories = getSubcategories(currentCategory.id);
+    }
+
+    if (topics.value.length > 0 && !selectedTopic.value) {
+        validationError.value = 'Please select a topic.';
+        return false;
+    }
+
+    validationError.value = null;
+    return true;
+};
+
 const submitForm = async () => {
+    if (!validateForm()) {
+        return;
+    }
+
     try {
         await router.post('/forums/newPost', form.value);
         console.log('Post created successfully!');
@@ -152,78 +193,45 @@ const submitForm = async () => {
                     <li v-for="(error, field) in errors" :key="field">{{ error }}</li>
                 </ul>
             </div>
+            <div v-if="validationError" class="mb-4 text-red-500">
+                {{ validationError }}
+            </div>
             <form @submit.prevent="submitForm" class="space-y-4">
                 <div class="flex items-center justify-center gap-4">
-                    <div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {{ selectedCategory?.name || 'Select a category' }}
-                                </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuItem v-for="category in categories" :key="category.id" @click="handleCategorySelect(category)">
-                                    {{ category.name }}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                    <div v-if="continents.length > 0">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {{ selectedContinent?.name || subCategoryLabel }}
-                                </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuItem v-for="continent in continents" :key="continent.id" @click="handleContinentSelect(continent)">
-                                    {{ continent.name }}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                    <div v-if="countries.length > 0">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {{ selectedCountry?.name || subCategoryLabel }}
-                                </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuItem v-for="country in countries" :key="country.id" @click="handleCountrySelect(country)">
-                                    {{ country.name }}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                    <div v-if="resorts.length > 0">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {{ selectedResort?.name || subCategoryLabel }}
-                                </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuItem v-for="resort in resorts" :key="resort.id" @click="handleResortSelect(resort)">
-                                    {{ resort.name }}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                    <div v-if="nestedSubcategories.length > 0">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <button class="px-4 py-2 text-white bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    {{ selectedNestedSubcategory?.name || subCategoryLabel }}
-                                </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuItem v-for="nestedSubcategory in nestedSubcategories" :key="nestedSubcategory.id" @click="handleNestedSubcategorySelect(nestedSubcategory)">
-                                    {{ nestedSubcategory.name }}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                    <ReusableDropdown
+                        :items="categories"
+                        :selectedItem="selectedCategory"
+                        label="Select a category"
+                        @select="handleCategorySelect"
+                    />
+                    <ReusableDropdown
+                        v-if="continents.length > 0"
+                        :items="continents"
+                        :selectedItem="selectedContinent"
+                        label="Select a continent"
+                        @select="handleContinentSelect"
+                    />
+                    <ReusableDropdown
+                        v-if="countries.length > 0"
+                        :items="countries"
+                        :selectedItem="selectedCountry"
+                        label="Select a country"
+                        @select="handleCountrySelect"
+                    />
+                    <ReusableDropdown
+                        v-if="resorts.length > 0"
+                        :items="resorts"
+                        :selectedItem="selectedResort"
+                        label="Select a resort"
+                        @select="handleResortSelect"
+                    />
+                    <ReusableDropdown
+                        v-if="topics.length > 0"
+                        :items="topics"
+                        :selectedItem="selectedTopic"
+                        label="Select a topic"
+                        @select="handleTopicSelect"
+                    />
                 </div>
                 <div>
                     <input
@@ -249,7 +257,7 @@ const submitForm = async () => {
                     </Link>
                     <button
                         type="submit"
-                        class="px-4 py-2 text-white bg-green-900 rounded-lg hover:bg-transparent hover:text-green-400 hover:border hover:border-green-900"
+                        class="px-4 py-2 text-white border border-green-900 rounded-lg hover:bg-green-900"
                     >
                         Create
                     </button>

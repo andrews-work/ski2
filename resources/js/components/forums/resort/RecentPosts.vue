@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { type Post, type Topic } from '@/types';
 import { computed, onMounted } from 'vue';
-import { Link } from '@inertiajs/vue3';  // Ensure Link is imported
+import { Link } from '@inertiajs/vue3';
+import { timeAgo, truncateContent, formatDate } from '@/utils/forums';
 
 const props = defineProps<{
     posts: Post[];
@@ -14,53 +15,18 @@ const filteredPosts = computed(() => {
     return props.posts.filter(post => post.topic_id === props.topic?.id);
 });
 
-// Limit the posts to the most recent 5
 const recentPosts = computed(() => {
     return filteredPosts.value.slice(0, 5);
 });
 
-const truncateContent = (content: string, wordLimit: number) => {
-    const words = content.split(' ');
-    return words.slice(0, wordLimit).join(' ') + (words.length > wordLimit ? '...' : '');
-};
-
-// Adjust the date format to day of month, month, yy
-const formatDate = (date: string) => {
-  const postDate = new Date(date);
-  const day = postDate.getDate();
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const month = monthNames[postDate.getMonth()];
-  const year = postDate.getFullYear().toString().slice(-2); // Get last 2 digits of the year
-
-  return `${day} ${month}, ${year}`;
-};
-
-const timeAgo = (date: string) => {
-  const postDate = new Date(date);
-  const now = new Date();
-  const diffInMs = now.getTime() - postDate.getTime();
-  const diffInHours = diffInMs / (1000 * 60 * 60);
-
-  if (diffInHours < 24) {
-    return `${Math.floor(diffInHours)} hours ago`;
-  }
-
-  // Call the formatDate function to return the formatted date
-  return formatDate(date);
-};
-
-// Debugging
 onMounted(() => {
     console.log('RecentPosts - posts:', props.posts);
-    // props.posts.forEach(post => {
-    //     console.log(`Post ${post.id} - User:`, post.user);
-    // });
 });
 </script>
 
 <template>
     <div class="h-full p-4 rounded-lg shadow-md">
-        <h2 class="mb-4 text-2xl font-bold text-center text-white">Recent Posts</h2>
+        <h2 class="mb-4 text-2xl font-bold text-center text-pink-200 hover:text-white">Recent Posts</h2>
         <ul class="space-y-4">
             <li
                 v-for="post in recentPosts"

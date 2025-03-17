@@ -21,7 +21,7 @@ class GearCategoryController
         return Inertia::render('Forums', [
             'category' => $category,
             'subcategories' => $subcategories,
-            'posts' => null, // No posts on the main gear page
+            'posts' => null,
         ]);
     }
 
@@ -37,7 +37,6 @@ class GearCategoryController
         $subcategory = $category->children()->where('slug', $subcategorySlug)->firstOrFail();
         Log::info('Subcategory fetched:', ['subcategory' => $subcategory]);
 
-        // Check if the subcategory has nested subcategories
         $nestedSubcategories = $subcategory->children;
         $posts = $nestedSubcategories->isEmpty() ? $subcategory->posts : null;
 
@@ -69,7 +68,7 @@ class GearCategoryController
 
         return Inertia::render('Forums', [
             'category' => $nestedSubcategory,
-            'subcategories' => null, // No further subcategories
+            'subcategories' => null,
             'posts' => $posts,
         ]);
     }

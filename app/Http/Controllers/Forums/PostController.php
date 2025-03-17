@@ -99,11 +99,13 @@ class PostController extends Controller
     {
         $categories = CategoryListModel::whereNull('parent_id')->get();
         $subcategories = CategoryListModel::whereNotNull('parent_id')->get();
+        $topics = TopicModel::all();
 
         return Inertia::render('Forums', [
             'createPost' => true,
             'categories' => $categories,
             'subcategories' => $subcategories,
+            'topics' => $topics,
             'continent' => null,
             'continents' => null,
             'category' => null,
@@ -111,6 +113,7 @@ class PostController extends Controller
             'resort' => null,
             'subcategory' => null,
             'userPost' => null,
+            'errors' => (object)[],
         ]);
     }
 
@@ -120,6 +123,7 @@ class PostController extends Controller
             $this->authorize('create', PostModel::class);
 
             $post = $this->postService->createPost($request->validated());
+            Log::info($post);
 
             return redirect()->route('posts', ['postId' => $post->id]);
         } catch (AuthorizationException $e) {
@@ -168,5 +172,5 @@ class PostController extends Controller
         }
     }
 
-    
+
 }

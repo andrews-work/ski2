@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Post, Category } from '@/types';
+import { Post } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
+import { formatDate, timeAgo, truncateContent } from '@/utils/forums.ts';
 
 const { posts } = defineProps<{
   posts: Post[];
@@ -10,45 +11,6 @@ const { posts } = defineProps<{
 onMounted(() => {
   console.log('Posts List Mounted');
 });
-
-const truncateContent = (content: string, wordLimit: number) => {
-  const words = content.split(' ');
-  return words.slice(0, wordLimit).join(' ') + (words.length > wordLimit ? '...' : '');
-};
-
-const getDayWithSuffix = (day: number) => {
-  if (day >= 11 && day <= 13) return `${day}th`;
-  switch (day % 10) {
-    case 1: return `${day}st`;
-    case 2: return `${day}nd`;
-    case 3: return `${day}rd`;
-    default: return `${day}th`;
-  }
-};
-
-const formatDate = (date: string) => {
-  const postDate = new Date(date);
-  const day = postDate.getDate();
-  const dayWithSuffix = getDayWithSuffix(day);
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const month = monthNames[postDate.getMonth()];
-  const year = postDate.getFullYear().toString().slice(-2);
-
-  return `${dayWithSuffix} ${month} ${year}`;
-};
-
-const timeAgo = (date: string) => {
-  const postDate = new Date(date);
-  const now = new Date();
-  const diffInMs = now.getTime() - postDate.getTime();
-  const diffInHours = diffInMs / (1000 * 60 * 60);
-
-  if (diffInHours < 24) {
-    return `${Math.floor(diffInHours)} hours ago`;
-  }
-
-  return formatDate(date);
-};
 
 const logCategory = (categorySlug: string) => {
   console.log('Category clicked:', categorySlug);

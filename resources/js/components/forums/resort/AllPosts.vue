@@ -1,9 +1,8 @@
-<!-- AllPosts.vue -->
 <script setup lang="ts">
 import { type Post, type Topic, type Category } from '@/types';
 import { computed, onMounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import PostList from '@/components/forums/resort/PostList.vue';
+import { formatDate, timeAgo, truncateContent } from '@/utils/forums';
 
 const props = defineProps<{
     posts: Post[];
@@ -12,6 +11,8 @@ const props = defineProps<{
     continentSlug: string;
     countrySlug: string;
     resortSlug: string;
+    loading: boolean;
+    error: string | null;
 }>();
 
 const filteredPosts = computed(() => {
@@ -19,34 +20,6 @@ const filteredPosts = computed(() => {
     if (!props.topic) return props.posts;
     return props.posts.filter(post => post.topic_id === props.topic?.id);
 });
-
-const truncateContent = (content: string, wordLimit: number) => {
-    const words = content.split(' ');
-    return words.slice(0, wordLimit).join(' ') + (words.length > wordLimit ? '...' : '');
-};
-
-const formatDate = (date: string) => {
-  const postDate = new Date(date);
-  const day = postDate.getDate();
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const month = monthNames[postDate.getMonth()];
-  const year = postDate.getFullYear().toString().slice(-2);
-
-  return `${day} ${month}, ${year}`;
-};
-
-const timeAgo = (date: string) => {
-  const postDate = new Date(date);
-  const now = new Date();
-  const diffInMs = now.getTime() - postDate.getTime();
-  const diffInHours = diffInMs / (1000 * 60 * 60);
-
-  if (diffInHours < 24) {
-    return `${Math.floor(diffInHours)} hours ago`;
-  }
-
-  return formatDate(date);
-};
 
 onMounted(() => {
     console.log('AllPosts - posts:', props.posts);
@@ -56,8 +29,21 @@ onMounted(() => {
 <template>
     <div class="h-full p-4 rounded-lg shadow-md">
         <Link :href="`/forums/categories/resorts/${continentSlug}/${countrySlug}/${resortSlug}/all`">
-            <h2 class="mb-4 text-2xl font-bold text-center text-white">All Posts</h2>
-            <ul class="space-y-4">
+            <h2 class="mb-4 text-2xl font-bold text-center text-indigo-200 hover:text-white">All</h2>
+
+            <div v-if="loading" class="text-center text-gray-400">
+                Loading posts...
+            </div>
+
+            <div v-else-if="error" class="text-center text-red-500">
+                {{ error }}
+            </div>
+
+            <div v-else-if="filteredPosts.length === 0" class="text-center text-gray-400">
+                No posts found.
+            </div>
+
+            <ul v-else class="space-y-4">
                 <li
                     v-for="post in filteredPosts"
                     :key="post.id"
@@ -77,6 +63,7 @@ onMounted(() => {
                     </Link>
                 </li>
             </ul>
+
         </Link>
     </div>
 </template>

@@ -13,10 +13,8 @@ return new class extends Migration
             $table->unsignedBigInteger('resort_id');
             $table->unsignedBigInteger('topic_id');
             $table->timestamps();
-
             $table->foreign('resort_id')->references('id')->on('category_list')->onDelete('cascade');
             $table->foreign('topic_id')->references('id')->on('topics')->onDelete('cascade');
-
             $table->unique(['resort_id', 'topic_id']);
         });
     }

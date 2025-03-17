@@ -8,20 +8,25 @@ use Illuminate\Database\Seeder;
 
 class TopicsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     protected $table = 'topics';
 
     public function run(): void
     {
         $topics = [
-            ['name' => 'Food', 'slug' => 'food'],
             ['name' => 'Travel', 'slug' => 'travel'],
-            ['name' => 'Mountain', 'slug' => 'mountain'],
+            ['name' => 'Restaurants', 'slug' => 'restaurants'],
             ['name' => 'Rentals', 'slug' => 'rentals'],
+            ['name' => 'Bars & Clubs', 'slug' => 'bars'],
+            ['name' => 'Park', 'slug' => 'park'],
             ['name' => 'Shops', 'slug' => 'shops'],
-            ['name' => 'Non-Skiing Activities', 'slug' => 'non-skiing-activities'],
+            ['name' => 'Local Events', 'slug' => 'events'],
+            ['name' => 'News', 'slug' => 'news'],
+            ['name' => 'Mountain', 'slug' => 'mountain'],
+            ['name' => 'General', 'slug' => 'general'],
+            ['name' => 'Not-Skiing Activities', 'slug' => 'not-skiing'],
+            ['name' => 'Backcountry', 'slug' => 'backcountry'],
+            ['name' => 'Suggestions', 'slug' => 'suggestions'],
         ];
 
         foreach ($topics as $topicData) {
