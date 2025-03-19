@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use App\Models\Forums\CategoryListModel;
 use App\Models\Forums\PostCommentModel;
 use App\Models\Forums\TopicModel;
+use App\Events\PostCreated;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostController extends Controller
@@ -25,13 +26,13 @@ class PostController extends Controller
         $this->postService = $postService;
     }
 
-    public function postList()
-    {
-        $posts = $this->postService->getAllPosts();
-        return inertia('Forums', [
-            'post' => $posts,
-        ]);
-    }
+    // public function postList()
+    // {
+    //     $posts = $this->postService->getAllPosts();
+    //     return inertia('Forums', [
+    //         'post' => $posts,
+    //     ]);
+    // }
 
     public function single($postId)
     {
@@ -124,6 +125,8 @@ class PostController extends Controller
 
             $post = $this->postService->createPost($request->validated());
             Log::info($post);
+
+            event(new PostCreated($post));
 
             return redirect()->route('posts', ['postId' => $post->id]);
         } catch (AuthorizationException $e) {

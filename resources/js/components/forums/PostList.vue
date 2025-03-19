@@ -1,15 +1,28 @@
 <script setup lang="ts">
 import { Post } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { formatDate, timeAgo, truncateContent } from '@/utils/forums.ts';
 
-const { posts } = defineProps<{
+const { posts: initialPosts } = defineProps<{
   posts: Post[];
 }>();
 
+const posts = ref(initialPosts);
+
 onMounted(() => {
   console.log('Posts List Mounted');
+
+  window.Echo.channel('post-list')
+    .listen('PostCreated', (e) => {
+      console.log('New post received:', e.post);
+      posts.value.unshift(e.post);
+    })
+    .error((error) => {
+      console.error('Error subscribing to channel:', error);
+    });
+
+  console.log('Channel: post-list');
 });
 
 const logCategory = (categorySlug: string) => {

@@ -18,6 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 p-4 rounded-xl">
 
+            <!-- not responsive size -->
             <div class="grid items-center justify-center gap-4 md:grid-cols-2">
                 <div class="relative flex items-center justify-center overflow-hidden italic font-bold border h-60 rounded-xl border-sidebar-border/70 dark:border-sidebar-border text-lime-400 hover:not-italic">
                     <h1 class="text-4xl" style="font-size: 80pt;">buy</h1>
@@ -27,6 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
+            <!-- not responsive size -->
             <div class="relative flex items-center h-20 p-4 border rounded-xl justify-evenly border-sidebar-border/70 dark:border-sidebar-border">
                 <h1>hello</h1>
                 <h1>search</h1>
@@ -39,7 +41,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <div class="flex flex-col flex-1 h-full gap-4 p-4 border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
                 <div class="grid gap-4 auto-rows-min md:grid-cols-1">
-                    <div class="relative flex items-center justify-center overflow-hidden border h-80 rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                    <div class="relative flex items-center justify-center overflow-hidden h-80 rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
                         <h1 class="text-2xl font-bold text-center">categories</h1>
                     </div>
                 </div>
@@ -112,12 +114,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
-            <div class="flex flex-col flex-1 h-full gap-4 rounded-xl">
+            <div class="flex flex-col flex-1 gap-4 rounded-xl">
     <div class="grid gap-4 auto-rows-min md:grid-cols-1">
         <div class="relative flex-col items-center justify-center overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-            <div class="p-6 rounded-lg shadow-md">
-                <h2 class="mb-6 text-2xl font-bold text-center text-gray-400">Recent Posts</h2>
-                <ul class="space-y-4">
+            <div class="p-6 overflow-y-auto rounded-lg shadow-md">
+                <h2 class="h-40 mb-6 text-2xl font-bold text-center text-gray-400">Recent Posts</h2>
+                <ul class="space-y-4 ">
                     <!-- Example Post 1 -->
                     <li class="p-6 transition-shadow duration-200 border border-gray-700 rounded-lg hover:border-gray-400 hover:shadow-lg">
                         <a href="/forums/posts/1" class="block">

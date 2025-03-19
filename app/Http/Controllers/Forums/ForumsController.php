@@ -24,12 +24,12 @@ class ForumsController extends Controller
         ->orderBy('created_at', 'desc')
         ->take(10)
         ->get();
-    Log::info('posts'. $posts);
+    Log::info('Forums Page - posts:'. $posts->count());
 
-    Log::info('Forums Page - Categories Count: ' . $categories->count());
-    Log::info('Forums Page - Subcategories Count: ' . $subcategories->count());
-    Log::info('Categories Data:', $categories->toArray());
-    Log::info('Subcategories Data:', $subcategories->toArray());
+    Log::info('Forums Page - Categories: ' . $categories->count());
+    Log::info('Forums Page - Subcategories: ' . $subcategories->count());
+    // Log::info('Categories Data:', $categories->toArray());
+    // Log::info('Subcategories Data:', $subcategories->toArray());
 
     return Inertia::render('Forums', [
         'categories' => $categories,

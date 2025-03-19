@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import { type Comment as CommentType } from '@/types';
 import Button from '@/components/ui/button/Button.vue';

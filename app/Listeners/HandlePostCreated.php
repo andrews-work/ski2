@@ -21,6 +21,6 @@ class HandlePostCreated
      */
     public function handle(PostCreated $event): void
     {
-        Log::info('PostCreated event handled', ['post' => $event->post]);
+        Log::info('listener - postCreated', ['post' => $event->post]);
     }
 }

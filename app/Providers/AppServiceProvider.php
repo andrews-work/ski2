@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\PostCreated;
+use Illuminate\Support\Facades\Event;
+use App\Listeners\HandlePostCreated;
 use App\Models\Forums\PostCommentModel;
 use App\Models\Forums\PostModel;
 use App\Policies\PostCommentPolicy;
@@ -26,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(PostModel::class, PostPolicy::class);
         Gate::policy(PostCommentModel::class, PostCommentPolicy::class);
+
+        // Event::listen(PostCreated::class, HandlePostCreated::class);
     }
 }

@@ -40,6 +40,7 @@ Route::get('dashboard', function () {
 
 
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
-require __DIR__.'/forums.php';
+require __DIR__. '/settings.php';
+require __DIR__. '/auth.php';
+require __DIR__. '/forums.php';
+require __DIR__. '/channels.php';

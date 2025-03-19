@@ -2,11 +2,13 @@
 import NavFooter from './NavFooter.vue';
 import NavMain from './NavMain.vue';
 import NavUser from './NavUser.vue';
+import NavSecond from './NavSecond.vue'; // Import the new component
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, Wallpaper, NotebookPen, MountainSnow, ShoppingCart, House, HandCoins } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Folder, Wallpaper, NotebookPen, MountainSnow, ShoppingCart, House, HandCoins, Users, Settings, Bell } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import { computed } from 'vue';
 
 const mainNavItems: NavItem[] = [
     {
@@ -53,6 +55,71 @@ const footerNavItems: NavItem[] = [
         icon: BookOpen,
     },
 ];
+
+const secondNavItems = computed(() => {
+    const route = usePage().url;
+
+    if (route.startsWith('/forums')) {
+        return [
+            {
+                title: 'my posts',
+                href: '/forums/posts/',
+                icon: Users,
+            },
+            {
+                title: 'my comments',
+                href: '/forums/comments/',
+                icon: Settings,
+            },
+        ];
+    } else if (route.startsWith('/resorts')) {
+        return [
+            {
+                title: 'Resort List',
+                href: '/resorts/list',
+                icon: MountainSnow,
+            },
+            {
+                title: 'Resort Notifications',
+                href: '/resorts/notifications',
+                icon: Bell,
+            },
+        ];
+    } else if (route.startsWith('/casino')) {
+        return [
+            {
+                title: 'Casino Games',
+                href: '/casino/games',
+                icon: HandCoins,
+            },
+            {
+                title: 'Casino Leaderboard',
+                href: '/casino/leaderboard',
+                icon: Users,
+            },
+        ];
+    } else if (route.startsWith('/marketplace')) {
+        return [
+            {
+                title: 'purchased',
+                href: '/marketplace',
+                icon: HandCoins,
+            },
+            {
+                title: 'wishlist',
+                href: '/marketplace',
+                icon: Users,
+            },
+            {
+                title: 'sold',
+                href: '/marketplace',
+                icon: Users,
+            },
+        ];
+    } else {
+        return [];
+    }
+});
 </script>
 
 <template>
@@ -71,6 +138,9 @@ const footerNavItems: NavItem[] = [
 
         <SidebarContent>
             <NavMain :items="mainNavItems" />
+            <div class="mt-12">
+                <NavSecond :items="secondNavItems" />
+            </div>
         </SidebarContent>
 
         <SidebarFooter>
