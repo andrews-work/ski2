@@ -2,7 +2,7 @@
 import NavFooter from './NavFooter.vue';
 import NavMain from './NavMain.vue';
 import NavUser from './NavUser.vue';
-import NavSecond from './NavSecond.vue'; // Import the new component
+import NavSecond from './NavSecond.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
@@ -102,16 +102,21 @@ const secondNavItems = computed(() => {
         return [
             {
                 title: 'purchased',
-                href: '/marketplace',
+                href: '/marketplace/[urchased]',
                 icon: HandCoins,
             },
             {
-                title: 'wishlist',
-                href: '/marketplace',
+                title: 'Wishlist',
+                href: '/marketplace/wishlist',
                 icon: Users,
             },
             {
-                title: 'sold',
+                title: 'sell',
+                href: '/marketplace/sell',
+                icon: Users,
+            },
+            {
+                title: 'buy',
                 href: '/marketplace',
                 icon: Users,
             },
@@ -128,9 +133,7 @@ const secondNavItems = computed(() => {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('register')">
-                            <AppLogo />
-                        </Link>
+                        <AppLogo />
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>

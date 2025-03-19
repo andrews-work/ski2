@@ -13,6 +13,7 @@ window.Echo = new Echo({
     forceTLS: false,
     disableStats: true,
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    enabledTransports: ['ws', 'wss'],
 });
 
 console.log('Echo initialized:', window.Echo);

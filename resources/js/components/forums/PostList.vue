@@ -12,18 +12,34 @@ const posts = ref(initialPosts);
 
 onMounted(() => {
   console.log('Posts List Mounted');
+  console.log('Subscribing to post-list channel...');
 
   window.Echo.channel('post-list')
+    .subscribed(() => {
+      console.log('Successfully subscribed to post-list channel');
+    })
     .listen('PostCreated', (e) => {
+      console.log('PostCreated event received');
       console.log('New post received:', e.post);
+
       posts.value.unshift(e.post);
+      console.log('Updated posts list:', posts.value);
     })
     .error((error) => {
       console.error('Error subscribing to channel:', error);
     });
 
-  console.log('Channel: post-list');
+  window.Echo.connector.pusher.connection.bind('connected', () => {
+    console.log('WebSocket connection established');
+  });
+
+  window.Echo.connector.pusher.connection.bind('disconnected', () => {
+    console.log('WebSocket connection lost');
+  });
+
+  console.log('Attempted to subscribe to post-list channel');
 });
+
 
 const logCategory = (categorySlug: string) => {
   console.log('Category clicked:', categorySlug);

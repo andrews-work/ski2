@@ -9,18 +9,13 @@ use Illuminate\Support\Facades\Log;
 
 class HandlePostCreated
 {
-    /**
-     * Create the event listener.
-     */
     public function __construct()
     {
     }
 
-    /**
-     * Handle the event.
-     */
     public function handle(PostCreated $event): void
     {
         Log::info('listener - postCreated', ['post' => $event->post]);
+        // should i re-render the PostList componnet here?
     }
 }

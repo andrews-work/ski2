@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Forums\ForumsController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Forums\ForumsController;
+use App\Http\Controllers\Marketplace\MarketplaceController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -14,27 +14,19 @@ Route::get('/resorts', function () {
 })->name('resorts');
 
 Route::get('/forums', [ForumsController::class, 'index'])->name('forums');
-
-Route::get('/auths/resorts', function () {
-    return Inertia::render('Resorts');
-})->middleware(['auth', 'verified'])->name('auths.resorts');
-
-Route::get('/marketplace', function () {
-    return Inertia::render('Marketplace');
-})->name('marketplace');
+Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
 
 Route::get('/casino', function () {
     return Inertia::render('Casino');
 })->name('casino');
 
-
-Route::get('/auths/marketplace', function () {
-    return Inertia::render('Marketplace');
-})->middleware(['auth', 'verified'])->name('auths.marketplace');
-
 Route::get('dashboard', function () {
     return Inertia::render('auths/Dashboard');
 })->middleware(['auth', 'verified'])->name('auths.dashboard');
+
+Route::get('/auths/resorts', function () {
+    return Inertia::render('Resorts');
+})->middleware(['auth', 'verified'])->name('auths.resorts');
 
 
 
@@ -44,3 +36,4 @@ require __DIR__. '/settings.php';
 require __DIR__. '/auth.php';
 require __DIR__. '/forums.php';
 require __DIR__. '/channels.php';
+require __DIR__. '/marketplace.php';

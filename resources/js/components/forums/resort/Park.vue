@@ -14,7 +14,7 @@ const props = defineProps<{
 <template>
     <div class="h-full p-4 rounded-lg shadow-md">
         <Link :href="`/forums/categories/resort/${continentSlug}/${countrySlug}/${resortSlug}/park/posts`">
-            <h2 class="mb-4 text-2xl font-bold text-center text-green-200 hover:text-white">Park</h2>
+            <h2 class="mb-4 text-2xl font-bold text-center text-green-200 hover:text-white">Park Rats</h2>
 
             <div v-if="parkPosts.length === 0" class="text-center text-gray-400">
                 No park posts found.

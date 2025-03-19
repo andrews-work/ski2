@@ -25,21 +25,36 @@ const isAuthenticated = usePage().props.auth.user !== null;
         </div>
 
         <div v-else class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl">
+
             <div class="grid gap-4 auto-rows-min md:grid-cols-3">
                 <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
+                    <h1>recent comments</h1>
                 </div>
                 <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
+                    <h1>recent posts</h1>
                 </div>
                 <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
+                    <h1>favourite posts</h1>
                 </div>
             </div>
+
+            <div class="grid gap-4 auto-rows-min md:grid-cols-3">
+                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                    <h1>item wishlist</h1>
+                </div>
+                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                    <h1>order history</h1>
+                </div>
+                <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                    <h1>order tracking</h1>
+                </div>
+            </div>
+
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
                 <PlaceholderPattern />
             </div>
+
         </div>
-        
+
     </AppLayout>
 </template>

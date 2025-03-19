@@ -30,10 +30,4 @@ class PostCreated implements ShouldBroadcast
             new Channel('post-list'),
         ];
     }
-
-    public function broadcastAs()
-    {
-        Log::info('broadcast as');
-        return 'post.created';
-    }
 }
