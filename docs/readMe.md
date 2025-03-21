@@ -1,20 +1,3 @@
-Client Request
-       ↓
-Middleware (Auth Check)
-       ↓
-Request (Validation + Basic Auth)
-       ↓
-Controller (Authorization + Delegation)
-       ↓
-Policy (Granular Permissions)
-       ↓
-Service (Business Logic)
-       ↓
-Controller (Response Handling)
-       ↓
-Client Response
-
-
 
 1. forums 
     1. roles
@@ -79,3 +62,18 @@ Client Response
     2. show categories
     3. show user posts
     4. show user comments
+
+
+- redo database
+- continents
+- countries
+- resorts
+
+- resorts need to hvae a few different things
+    - forum posts based by topic
+    - resort api data
+        - weather
+        - wikipedia
+        - youtube
+        - instagram
+        - 

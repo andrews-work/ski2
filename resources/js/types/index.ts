@@ -10,6 +10,8 @@ export interface BreadcrumbItem {
     href: string;
 }
 
+export type BreadcrumbItemType = BreadcrumbItem;
+
 export interface NavItem {
     title: string;
     href: string;
@@ -33,8 +35,31 @@ export interface User {
     updated_at: string;
 }
 
-export type BreadcrumbItemType = BreadcrumbItem;
+export interface ListingType {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    condition: string;
+    seller_rating: string;
+    location: string;
+    usage_level: string | null;
+    category: { id: number; name: string };
+    user: { id: number; name: string };
+    images: ImageType[];
+    created_at: string;
+}
 
+export interface ImageType {
+    id: number;
+    path: string;
+    url: string;
+}
+
+export interface ListingCategory {
+    id: number;
+    name: string;
+}
 export interface Category {
     id: number;
     name: string;

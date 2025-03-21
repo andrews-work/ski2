@@ -6,7 +6,7 @@ import NavSecond from './NavSecond.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, Wallpaper, NotebookPen, MountainSnow, ShoppingCart, House, HandCoins, Users, Settings, Bell } from 'lucide-vue-next';
+import { BookOpen, MessageCircle, Folder, Wallpaper, NotebookPen, MountainSnow, ShoppingCart, House, UserRoundPen, HandCoins, Users, Settings, Bell, List, PersonStanding, Star, DollarSign, Wallet, Hand } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed } from 'vue';
 
@@ -40,6 +40,11 @@ const mainNavItems: NavItem[] = [
         title: 'Casino',
         href: '/casino',
         icon: HandCoins
+    },
+    {
+        title: 'Mates',
+        href: '/mates',
+        icon: Users
     }
 ];
 
@@ -64,12 +69,12 @@ const secondNavItems = computed(() => {
             {
                 title: 'my posts',
                 href: '/forums/posts/',
-                icon: Users,
+                icon: UserRoundPen,
             },
             {
                 title: 'my comments',
                 href: '/forums/comments/',
-                icon: Settings,
+                icon: MessageCircle,
             },
         ];
     } else if (route.startsWith('/resorts')) {
@@ -101,24 +106,34 @@ const secondNavItems = computed(() => {
     } else if (route.startsWith('/marketplace')) {
         return [
             {
-                title: 'purchased',
-                href: '/marketplace/[urchased]',
-                icon: HandCoins,
-            },
-            {
-                title: 'Wishlist',
-                href: '/marketplace/wishlist',
-                icon: Users,
-            },
-            {
                 title: 'sell',
                 href: '/marketplace/sell',
-                icon: Users,
+                icon: HandCoins,
             },
             {
                 title: 'buy',
                 href: '/marketplace',
-                icon: Users,
+                icon: DollarSign,
+            },
+            {
+                title: 'listings',
+                href: '/marketplace/listings',
+                icon: List,
+            },
+            {
+                title: 'my listings',
+                href: '/marketplace/listings/mine',
+                icon: PersonStanding,
+            },
+            {
+                title: 'purchased',
+                href: '/marketplace/[urchased]',
+                icon: Wallet,
+            },
+            {
+                title: 'wishlist',
+                href: '/marketplace/wishlist',
+                icon: Star,
             },
         ];
     } else {

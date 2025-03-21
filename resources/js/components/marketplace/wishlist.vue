@@ -5,10 +5,9 @@ import { Head, Link } from '@inertiajs/vue3';
 import { CableCar, LampDesk, PlugZap, Armchair, UtensilsCrossed, CarFront, Shirt, PartyPopper } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Marketplace / Wishlist',
-        href: '/marketplace',
-    },
+    { title: 'Marketplace ',href: '/marketplace' },
+    { title: 'Wishlist',href: '/marketplace/wishlist' },
+
 ];
 
 </script>
