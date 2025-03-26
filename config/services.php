@@ -41,8 +41,8 @@ return [
     ],
 
     // restaurants
-    'tripadvisor' => [
-        'api_key' => env('TRIPADVISOR_API_KEY'),
-        'base_url' => 'https://api.content.tripadvisor.com/api/v1'
+    'yelp' => [
+        'api_key' => env('YELP_API_KEY'),
+        'base_url' => 'https://api.yelp.com/v3/',
     ],
 ];

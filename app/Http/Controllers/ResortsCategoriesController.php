@@ -81,26 +81,35 @@ class ResortsCategoriesController extends Controller
         }
     }
 
-    public function restaurants($continentSlug, $countrySlug, $resortSlug)
+    public function restaurants($continentSlug, $countrySlug, $resortSlug, ResortRestaurantController $restaurantController)
     {
-        $resort = Resort::where('slug', $resortSlug)->first();
+        try {
+            $resort = Resort::where('slug', $resortSlug)->firstOrFail();
+            $apiResponse = $restaurantController->getRestaurants($resort->name);
 
-        if (!$resort) {
-            return redirect()->back()->with('error', 'Resort not found.');
+            return Inertia::render('resort/Restaurants', [
+                'currentView' => 'restaurants',
+                'continent' => $resort->country->continent,
+                'country' => $resort->country,
+                'resort' => $resort,
+                'restaurants' => $apiResponse,
+                'debug' => true,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Restaurants API failed for {$resortSlug}", [
+                'error' => $e->getMessage()
+            ]);
+
+            return Inertia::render('resort/Restaurants', [
+                'currentView' => 'restaurants',
+                'continent' => null,
+                'country' => null,
+                'resort' => null,
+                'restaurants' => ['error' => $e->getMessage()],
+                'debug' => true,
+            ]);
         }
-
-        $country = $resort->country;
-        $continent = $country->continent;
-
-        return Inertia::render('resort/Restaurants', [
-            'currentView' => 'restaurants',
-            'continent' => $continent,
-            'country' => $country,
-            'resort' => $resort,
-            'continents' => [],
-            'countries' => [],
-            'categories' => [],
-        ]);
     }
 }
 
