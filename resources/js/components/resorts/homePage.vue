@@ -7,7 +7,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Resorts ',href: '/resorts' },
 
 ];
-
 </script>
 
 <template>
@@ -15,7 +14,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 p-4 rounded-xl">
-            <h1> homr page?</h1>
-        </div>
+        <h1>Welcome to Resorts</h1>
+        <Link href="/resorts/continents" class="text-blue-500">Click here to view continents list</Link>
+    </div>
     </AppLayout>
 </template>

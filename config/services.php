@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    // hotels
+    'makcorps' => [
+        'api_key' => env('MAKCORPS_API_KEY'),
+    ],
+
+    // restaurants
+    'tripadvisor' => [
+        'api_key' => env('TRIPADVISOR_API_KEY'),
+        'base_url' => 'https://api.content.tripadvisor.com/api/v1'
+    ],
 ];

@@ -13,5 +13,12 @@ class DatabaseSeeder extends Seeder
         $this->call(PostSeeder::class);
         $this->call(PostCommentSeeder::class);
         $this->call(ListingCategorySeeder::class);
+
+
+        // new code
+        $this -> call (ContinentsTableSeeder::class);
+        $this -> call (CountriesTableSeeder::class);
+        $this -> call (ResortsSeeder::class);
+        $this -> call (CategoriesTableSeeder::class);
     }
 }

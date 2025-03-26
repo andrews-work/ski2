@@ -35,6 +35,44 @@ export interface User {
     updated_at: string;
 }
 
+export interface Continent {
+    id: number;
+    name: string;
+    slug: string;
+}
+
+export interface Country {
+    id: number;
+    name: string;
+    slug: string;
+    continent_id: number;
+}
+
+export interface Resort {
+    id: number;
+    name: string;
+    slug: string;
+    country_id: number;
+    latitude?: number;
+    longitude?: number;
+    altitude?: number;
+    season_start?: string;
+    season_end?: string;
+}
+
+
+export interface Category {
+    title: string;
+    icon: string;
+    link: string;
+}
+
+
+
+
+
+
+
 export interface ListingType {
     id: number;
     title: string;
@@ -60,7 +98,7 @@ export interface ListingCategory {
     id: number;
     name: string;
 }
-export interface Category {
+export interface ForumCategory {
     id: number;
     name: string;
     slug: string;
