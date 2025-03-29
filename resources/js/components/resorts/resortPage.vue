@@ -33,7 +33,7 @@ const categories = [
     { title: 'Events', icon: PartyPopper, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/events` },
     { title: 'Jobs', icon: BriefcaseBusiness, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/jobs` },
     { title: 'Marketplace', icon: ShoppingCart, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/marketplace` },
-    { title: 'Businesses', icon: Building2, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/businesses` },
+    { title: 'Business', icon: Building2, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/business` },
     { title: 'Weather', icon: CloudSun, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/weather` },
 ];
 </script>
@@ -46,6 +46,32 @@ const categories = [
         <HeroImage :resort="resort" />
         <InfoBar :resort="resort" />
         <ResortCategory :categories="categories" />
+
+        <h1>
+            have resort reviews section
+        </h1>
+        <h1>
+            also have a section for average prices for a day weekend week fortnight- can have 4 cards each with a slideshow for different time? or have one time switch that changes all at the same time?
+        </h1>
+        <h1>
+            plan: update infoBar to enlarge and show more info: ski day pass, current number of restaurants open 21/30
+        </h1>
+        <h1>
+            update info component (not bat) to include a mountain section: where the user can find out about the resorts within the area like chamonix, breck
+        </h1>
+        <h1>
+            get weather info, update infoBar
+        </h1>
+        <h1>
+            create role middleware: guests, users, business (business can create business users), admin,
+        </h1>
+        <h1>
+            business: user can fill out form to create business, the business can create users which are attached to the business but not a predefined user (privacy), the user can purchase adds
+        </h1>
+        <h1>
+            make a reusable checkout componnet so i can use it for both business buying my product - adds etc. , and for the marketplace
+            
+        </h1>
         <Instagram />
     </AppLayout>
 </template>

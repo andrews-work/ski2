@@ -41,7 +41,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <!-- <Geography :resort="resort" /> -->
                     </div>
                     <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                        <!-- Placeholder -->
+                        <h1>ski patrol number</h1>
                     </div>
                 </div>
 

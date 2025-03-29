@@ -34,9 +34,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div v-if="currentView === 'restaurants'" class="p-4">
-            <!-- Header section -->
+
             <div class="relative">
-                <!-- Centered title -->
+
                 <div class="py-12 text-center">
                     <h1 class="mb-4 text-4xl font-bold">Restaurants in {{ resort.name }}</h1>
                     <p class="text-lg text-gray-600">
@@ -44,7 +44,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </p>
                 </div>
 
-                <!-- View toggle button (absolutely positioned) -->
                 <button
                     @click="toggleViewMode"
                     class="absolute right-0 flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors border rounded-lg top-12 hover:bg-gray-700"

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Resort;
 
+use App\Http\Controllers\Controller;
 use App\Services\RestaurantService;
 use Illuminate\Support\Facades\Log;
 
-class ResortRestaurantController extends Controller
+class RestaurantController extends Controller
 {
     public function __construct(
         protected RestaurantService $restaurantService

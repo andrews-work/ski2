@@ -45,4 +45,17 @@ return [
         'api_key' => env('YELP_API_KEY'),
         'base_url' => 'https://api.yelp.com/v3/',
     ],
+
+    // weather 1
+    'open_weather' => [
+        'api_key' => env('OPEN_WEATHER_KEY'),
+        'base_url' => 'https://api.openweathermap.org/data/3.0/onecall?',
+    ],
+
+    // lat / long
+    'geo_api' => [
+        'api_key' => env('GEO_API_KEY'),
+        'base_url' => 'https://api.geoapify.com/v1/geocode/search?text='
+    ],
+    // weather 2
 ];
