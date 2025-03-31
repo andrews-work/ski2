@@ -105,7 +105,24 @@ export interface WeatherTabItem {
     label: string;
 }
 
-
+export interface LiftData {
+    status: Record<string, string>;
+    stats: {
+        open: number;
+        hold: number;
+        scheduled: number;
+        closed: number;
+        percentage: Record<string, number>;
+    };
+    weather?: {
+        date: string;
+        conditions: string;
+        temperature: {
+            max: number;
+        };
+    };
+    is_open: boolean;
+}
 
 
 

@@ -19,6 +19,7 @@ class InfoController extends Controller
 
             // First get the basic geo data
             $apiData = $this->getApiData($resortName);
+            $liftData = $this->getLifts($resort);
 
             Log::debug("GeoAPI Response Data", [
                 'resort' => $resortName,
@@ -79,6 +80,7 @@ class InfoController extends Controller
             $responseData = [
                 'status' => 'success',
                 'resort' => $resort->fresh(),
+                'lift_data' => $liftData,
                 'message' => 'Resort data updated successfully'
             ];
 
@@ -365,6 +367,56 @@ class InfoController extends Controller
                 'error' => $e->getMessage()
             ]);
             throw $e;
+        }
+    }
+
+    private function getLifts(Resort $resort): array
+    {
+        try {
+            $baseUrl = config('services.lifty.base_url');
+            // Better resort name sanitization
+            $resortId = strtolower(preg_replace('/[^a-z0-9-]/i', '-', $resort->name));
+            $url = $baseUrl . $resortId;
+
+            Log::debug("Attempting to fetch lift data", [
+                'original_name' => $resort->name,
+                'sanitized_id' => $resortId,
+                'full_url' => $url
+            ]);
+
+            $response = Http::timeout(10)->get($url);
+
+            if (!$response->successful()) {
+                throw new \Exception(sprintf(
+                    "Liftie API request failed. Status: %s, Response: %s, URL: %s",
+                    $response->status(),
+                    $response->body(),
+                    $url
+                ));
+            }
+
+            $data = $response->json();
+
+            Log::debug("Successfully fetched lift data", [
+                'resort' => $resort->name,
+                'lift_count' => count($data['lifts']['status'] ?? []),
+                'is_open' => $data['open'] ?? false
+            ]);
+
+            return [
+                'lift_status' => $data['lifts']['status'] ?? [],
+                'lift_stats' => $data['lifts']['stats'] ?? [],
+                'weather' => $data['weather'] ?? null,
+                'is_open' => $data['open'] ?? false
+            ];
+
+        } catch (\Exception $e) {
+            Log::error("Failed to fetch lift data", [
+                'resort' => $resort->name,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return [];
         }
     }
 }

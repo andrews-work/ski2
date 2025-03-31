@@ -11,20 +11,33 @@ use Carbon\Carbon;
 class WeatherController extends Controller
 {
     protected $logDateFormat = 'Y-m-d H:i:s';
+    protected $activeApi = 'open_weather';
 
     public function getWeather($resortName)
     {
         try {
             $resort = Resort::where('name', $resortName)->firstOrFail();
 
-            // Get both current and hourly data
-            $apiResponse = $this->getOpenWeatherData($resort);
-            $currentData = $this->getCurrent($resort, $apiResponse);
-            $hourlyData = $this->getHourly($resort, $apiResponse);
+            // Get data from both APIs
+            $openWeatherData = $this->getOpenWeatherData($resort);
+            $weatherUnlockedData = $this->getWeatherUnlockedData($resort);
+
+            // Log both responses for comparison
+            Log::debug($this->formatLogMessage("API Comparison", [
+                'Resort' => $resort->name,
+                'OpenWeather Status' => $openWeatherData['status'] ?? null,
+                'WeatherUnlocked Status' => $weatherUnlockedData['status'] ?? null,
+                'Time' => now()->format($this->logDateFormat)
+            ]));
+
+            // Process data from default API (OpenWeather)
+            $currentData = $this->getCurrent($resort, $openWeatherData);
+            $hourlyData = $this->getHourly($resort, $openWeatherData);
 
             // Log successful weather data retrieval
             Log::info($this->formatLogMessage("Weather data retrieved", [
                 'Resort' => $resort->name,
+                'API' => $this->activeApi,
                 'Sunrise' => $currentData['sunrise'] ?? null,
                 'Sunset' => $currentData['sunset'] ?? null,
                 'Hourly_Data_Points' => count($hourlyData),
@@ -32,26 +45,17 @@ class WeatherController extends Controller
                 'Server Time' => now()->format($this->logDateFormat),
                 'Resort Time' => $resort->timezone
                     ? now()->setTimezone($resort->timezone)->format($this->logDateFormat)
-                    : null
+                    : null,
+                'WeatherUnlocked_Data' => $weatherUnlockedData // Log for comparison
             ]));
 
             $responseData = [
                 'status' => 'success',
                 'data' => array_merge($currentData, ['hourly' => $hourlyData]),
                 'resort' => $resort->name,
-                'timezone' => $resort->timezone ?? 'UTC'
+                'timezone' => $resort->timezone ?? 'UTC',
+                'weather_unlocked_data' => $weatherUnlockedData // Include for debugging
             ];
-
-            Log::debug($this->formatLogMessage("Frontend Payload", [
-                'Status' => $responseData['status'],
-                'Resort' => $responseData['resort'],
-                'Timezone' => $responseData['timezone'],
-                'Server Time' => now()->format($this->logDateFormat),
-                'Resort Time' => $resort->timezone
-                    ? now()->setTimezone($resort->timezone)->format($this->logDateFormat)
-                    : 'N/A',
-                'Weather Data' => $responseData['data']
-            ]));
 
             return $responseData;
 
@@ -264,6 +268,82 @@ class WeatherController extends Controller
 
         } catch (\Exception $e) {
             Log::error($this->formatLogMessage("URL Construction Error", [
+                'Resort' => $resort->name ?? 'unknown',
+                'Error' => $e->getMessage(),
+                'Time' => now()->format($this->logDateFormat)
+            ]));
+            throw $e;
+        }
+    }
+
+    protected function getWeatherUnlockedData(Resort $resort)
+    {
+        try {
+            $url = $this->getWeatherUnlockedUrl($resort);
+            $response = Http::get($url);
+            $responseData = $response->json();
+
+            Log::debug($this->formatLogMessage("WeatherUnlocked API Response", [
+                'Resort' => $resort->name,
+                'Status' => $response->status(),
+                'Response_Keys' => array_keys($responseData),
+                'Time' => now()->format($this->logDateFormat)
+            ]));
+
+            if ($response->failed()) {
+                throw new \Exception("WeatherUnlocked API request failed with status: " . $response->status());
+            }
+
+            return $responseData;
+
+        } catch (\Exception $e) {
+            Log::error($this->formatLogMessage("WeatherUnlocked API Error", [
+                'Resort' => $resort->name,
+                'Error' => $e->getMessage(),
+                'Time' => now()->format($this->logDateFormat)
+            ]));
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+
+    protected function getWeatherUnlockedUrl(Resort $resort)
+    {
+        try {
+            $baseUrl = config('services.weather_unlocked.base_url');
+            $appId = config('services.weather_unlocked.app_id');
+            $appKey = config('services.weather_unlocked.app_key');
+            $resortId = $resort->weather_unlocked_id;
+
+            if (empty($resortId)) {
+                throw new \Exception("WeatherUnlocked resort ID not configured for this resort");
+            }
+
+            if (empty($appId) || empty($appKey)) {
+                throw new \Exception("WeatherUnlocked API credentials not configured");
+            }
+
+            $url = sprintf(
+                '%s%s?app_id=%s&app_key=%s',
+                $baseUrl,
+                $resortId,
+                urlencode($appId),
+                urlencode($appKey)
+            );
+
+            // Secure logging that hides credentials
+            Log::debug($this->formatLogMessage("Constructed WeatherUnlocked URL", [
+                'Resort' => $resort->name,
+                'Base_URL' => $baseUrl,
+                'Resort_ID' => $resortId,
+                'Has_App_ID' => !empty($appId),
+                'Has_App_Key' => !empty($appKey),
+                'Time' => now()->format($this->logDateFormat)
+            ]));
+
+            return $url;
+
+        } catch (\Exception $e) {
+            Log::error($this->formatLogMessage("WeatherUnlocked URL Construction Error", [
                 'Resort' => $resort->name ?? 'unknown',
                 'Error' => $e->getMessage(),
                 'Time' => now()->format($this->logDateFormat)
