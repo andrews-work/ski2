@@ -57,5 +57,8 @@ return [
         'api_key' => env('GEO_API_KEY'),
         'base_url' => 'https://api.geoapify.com/v1/geocode/search?text='
     ],
-    // weather 2
+    // elevation
+    'open_meteo' => [
+        'base_url' => 'https://api.open-meteo.com/v1/',
+    ],
 ];

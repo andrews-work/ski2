@@ -16,13 +16,18 @@ class WeatherController extends Controller
     {
         try {
             $resort = Resort::where('name', $resortName)->firstOrFail();
-            $currentData = $this->getCurrent($resort);
+
+            // Get both current and hourly data
+            $apiResponse = $this->getOpenWeatherData($resort);
+            $currentData = $this->getCurrent($resort, $apiResponse);
+            $hourlyData = $this->getHourly($resort, $apiResponse);
 
             // Log successful weather data retrieval
             Log::info($this->formatLogMessage("Weather data retrieved", [
                 'Resort' => $resort->name,
                 'Sunrise' => $currentData['sunrise'] ?? null,
                 'Sunset' => $currentData['sunset'] ?? null,
+                'Hourly_Data_Points' => count($hourlyData),
                 'Timezone' => $resort->timezone ?? 'UTC',
                 'Server Time' => now()->format($this->logDateFormat),
                 'Resort Time' => $resort->timezone
@@ -32,7 +37,7 @@ class WeatherController extends Controller
 
             $responseData = [
                 'status' => 'success',
-                'data' => $currentData,
+                'data' => array_merge($currentData, ['hourly' => $hourlyData]),
                 'resort' => $resort->name,
                 'timezone' => $resort->timezone ?? 'UTC'
             ];
@@ -63,6 +68,99 @@ class WeatherController extends Controller
                 'message' => 'Weather data unavailable',
                 'error' => $e->getMessage()
             ];
+        }
+    }
+
+    protected function getHourly(Resort $resort, array $apiResponse)
+    {
+        try {
+            $hourlyForecast = $apiResponse['hourly'] ?? [];
+            $timezone = $apiResponse['timezone'] ?? $resort->timezone ?? 'UTC';
+
+            // Process hourly data for next 24 hours
+            $next24Hours = array_slice($hourlyForecast, 0, 24);
+            $processedHourly = array_map(function($hour) use ($timezone) {
+                return [
+                    'dt' => $hour['dt'],
+                    'time' => Carbon::createFromTimestamp($hour['dt'], 'UTC')
+                        ->setTimezone($timezone)
+                        ->format('H:i'),
+                    'temp' => round($hour['temp']),
+                    'feels_like' => round($hour['feels_like']),
+                    'wind_speed' => round($hour['wind_speed'] * 3.6), // Convert to km/h
+                    'visibility' => round($hour['visibility'] / 1000, 1), // Convert to km
+                    'icon' => $hour['weather'][0]['icon'] ?? null,
+                    'weather_description' => $hour['weather'][0]['description'] ?? null
+                ];
+            }, $next24Hours);
+
+            Log::debug($this->formatLogMessage("Processed Hourly Data", [
+                'Resort' => $resort->name,
+                'Data_Points' => count($processedHourly),
+                'First_Hour' => $processedHourly[0]['time'] ?? null,
+                'Last_Hour' => end($processedHourly)['time'] ?? null,
+                'Time' => now()->format($this->logDateFormat)
+            ]));
+
+            return $processedHourly;
+
+        } catch (\Exception $e) {
+            Log::error($this->formatLogMessage("Hourly Data Processing Error", [
+                'Resort' => $resort->name,
+                'Error' => $e->getMessage(),
+                'Trace' => $e->getTraceAsString(),
+                'Time' => now()->format($this->logDateFormat)
+            ]));
+            return [];
+        }
+    }
+
+    protected function getCurrent(Resort $resort, array $apiResponse)
+    {
+        try {
+            $currentWeather = $apiResponse['current'] ?? [];
+            $dailyForecast = $apiResponse['daily'][0] ?? [];
+            $timezone = $apiResponse['timezone'] ?? $resort->timezone ?? 'UTC';
+            $sunrise = $currentWeather['sunrise'] ?? null;
+            $sunset = $currentWeather['sunset'] ?? null;
+
+            return [
+                // Time data
+                'sunrise' => $sunrise
+                    ? Carbon::createFromTimestamp($sunrise, 'UTC')
+                        ->setTimezone($timezone)
+                        ->format('Y-m-d H:i:s')
+                    : null,
+                'sunset' => $sunset
+                    ? Carbon::createFromTimestamp($sunset, 'UTC')
+                        ->setTimezone($timezone)
+                        ->format('Y-m-d H:i:s')
+                    : null,
+                'timezone' => $timezone,
+                'timezone_offset' => $apiResponse['timezone_offset'] ?? 0,
+                'current_time' => now()->setTimezone($timezone)->format('Y-m-d H:i:s'),
+
+                // Weather data
+                'temp' => $currentWeather['temp'] ?? null,
+                'feels_like' => $currentWeather['feels_like'] ?? null,
+                'humidity' => $currentWeather['humidity'] ?? null,
+                'wind_speed' => $currentWeather['wind_speed'] ? round($currentWeather['wind_speed'] * 3.6) : null, // Convert to km/h
+                'uvi' => $currentWeather['uvi'] ?? null,
+                'visibility' => $currentWeather['visibility'] ? round($currentWeather['visibility'] / 1000, 1) : null, // Convert to km
+                'daily_snow' => $dailyForecast['snow'] ?? null,
+                'snow_1h' => $currentWeather['snow']['1h'] ?? null,
+                'weather_condition' => $currentWeather['weather'][0]['main'] ?? null,
+                'weather_description' => $currentWeather['weather'][0]['description'] ?? null
+            ];
+
+        } catch (\Exception $e) {
+            Log::error($this->formatLogMessage("Current Weather Processing Error", [
+                'Resort' => $resort->name,
+                'Error' => $e->getMessage(),
+                'Trace' => $e->getTraceAsString(),
+                'Time' => now()->format($this->logDateFormat)
+            ]));
+            throw $e;
         }
     }
 
@@ -107,67 +205,6 @@ class WeatherController extends Controller
             Log::error($this->formatLogMessage("API Request Failed", [
                 'Resort' => $resort->name,
                 'URL' => $url ?? 'not constructed',
-                'Error' => $e->getMessage(),
-                'Trace' => $e->getTraceAsString(),
-                'Time' => now()->format($this->logDateFormat)
-            ]));
-            throw $e;
-        }
-    }
-
-    protected function getCurrent(Resort $resort)
-    {
-        try {
-            $apiResponse = $this->getOpenWeatherData($resort);
-            $currentWeather = $apiResponse['current'] ?? [];
-            $dailyForecast = $apiResponse['daily'][0] ?? [];
-
-            Log::debug($this->formatLogMessage("Snow Analysis", [
-                'Resort' => $resort->name,
-                'Current Snow' => $currentWeather['snow']['1h'] ?? '0 mm',
-                'Daily Snow' => $dailyForecast['snow'] ?? '0 mm',
-                'Precipitation' => isset($dailyForecast['rain'])
-                    ? $dailyForecast['rain'] . ' mm rain'
-                    : (isset($dailyForecast['snow']) ? $dailyForecast['snow'] . ' mm snow' : 'none'),
-                'Time' => now()->format($this->logDateFormat)
-            ]));
-
-            $timezone = $apiResponse['timezone'] ?? $resort->timezone ?? 'UTC';
-            $sunrise = $currentWeather['sunrise'] ?? null;
-            $sunset = $currentWeather['sunset'] ?? null;
-
-            return [
-                // Time data
-                'sunrise' => $sunrise
-                    ? Carbon::createFromTimestamp($sunrise, 'UTC')
-                        ->setTimezone($timezone)
-                        ->format('Y-m-d H:i:s')
-                    : null,
-                'sunset' => $sunset
-                    ? Carbon::createFromTimestamp($sunset, 'UTC')
-                        ->setTimezone($timezone)
-                        ->format('Y-m-d H:i:s')
-                    : null,
-                'timezone' => $timezone,
-                'timezone_offset' => $apiResponse['timezone_offset'] ?? 0,
-                'current_time' => now()->setTimezone($timezone)->format('Y-m-d H:i:s'),
-
-                // Weather data
-                'temp' => $currentWeather['temp'] ?? null,
-                'feels_like' => $currentWeather['feels_like'] ?? null,
-                'humidity' => $currentWeather['humidity'] ?? null,
-                'wind_speed' => $currentWeather['wind_speed'] ?? null,
-                'uvi' => $currentWeather['uvi'] ?? null,
-                'visibility' => $currentWeather['visibility'] ?? null,
-                'daily_snow' => $dailyForecast['snow'] ?? null,
-                'snow_1h' => $currentWeather['snow']['1h'] ?? null,
-                'weather_condition' => $currentWeather['weather'][0]['main'] ?? null,
-                'weather_description' => $currentWeather['weather'][0]['description'] ?? null
-            ];
-
-        } catch (\Exception $e) {
-            Log::error($this->formatLogMessage("Weather Processing Error", [
-                'Resort' => $resort->name,
                 'Error' => $e->getMessage(),
                 'Trace' => $e->getTraceAsString(),
                 'Time' => now()->format($this->logDateFormat)

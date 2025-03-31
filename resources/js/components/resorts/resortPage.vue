@@ -6,7 +6,7 @@ import InfoBar from './resort/infoBar.vue';
 import ResortCategory from './resort/resortCategory.vue';
 import Instagram from './resort/instagram.vue';
 import HeroImage from './resort/heroImage.vue';
-import { PartyPopper, BriefcaseBusiness, ShoppingCart, Info, NotebookPen, Hotel, Martini, Building2, Utensils, CloudSun } from 'lucide-vue-next';
+import { PartyPopper, BriefcaseBusiness, Tv, ShoppingCart, Info, NotebookPen, Hotel, Martini, Building2, Utensils, CloudSun, Camera } from 'lucide-vue-next';
 
 const props = defineProps<{
     continent: any;
@@ -29,12 +29,14 @@ const categories = [
     { title: 'Hotels', icon: Hotel, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/hotels` },
     { title: 'Restaurants', icon: Utensils, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/restaurants` },
     { title: 'Forums', icon: NotebookPen, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/forums` },
+    { title: 'Ad', icon: Tv, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/Ad` },
     { title: 'Bars', icon: Martini, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/bars` },
     { title: 'Events', icon: PartyPopper, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/events` },
     { title: 'Jobs', icon: BriefcaseBusiness, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/jobs` },
     { title: 'Marketplace', icon: ShoppingCart, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/marketplace` },
     { title: 'Business', icon: Building2, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/business` },
     { title: 'Weather', icon: CloudSun, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/weather` },
+    { title: 'Content', icon: Camera, link: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}/content` },
 ];
 </script>
 
@@ -70,7 +72,7 @@ const categories = [
         </h1>
         <h1>
             make a reusable checkout componnet so i can use it for both business buying my product - adds etc. , and for the marketplace
-            
+
         </h1>
         <Instagram />
     </AppLayout>

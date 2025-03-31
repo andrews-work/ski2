@@ -68,6 +68,51 @@ export interface Category {
 }
 
 
+export interface WeatherHourly {
+    time: string;
+    icon?: string;
+    weather_description: string;
+    temp: number;
+    wind_speed: number;
+    visibility: number;
+}
+
+export interface WeatherCurrent {
+    sunrise: string;
+    sunset: string;
+    temp: number;
+    feels_like: number;
+    visibility: number;
+    uvi: number;
+    wind_speed: number;
+    daily_snow: number;
+    snow1: number;
+}
+
+export interface WeatherResponse {
+    status?: 'success' | 'error';
+    error?: string;
+    data?: {
+        current?: WeatherCurrent;
+        hourly?: WeatherHourly[];
+    };
+}
+
+export type WeatherTab = 'today' | 'tomorrow' | 'threeDays';
+
+export interface WeatherTabItem {
+    id: WeatherTab;
+    label: string;
+}
+
+
+
+
+
+
+
+
+
 
 
 

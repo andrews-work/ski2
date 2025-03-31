@@ -67,25 +67,34 @@ const MONTH_NAMES = [
   };
 
   // Time Components
-export const getTime12Hour = (dateString: string, timezone?: string): string => {
+  export const getTime12Hour = (dateString: string, timezone?: string): string => {
     if (!dateString) return '--:--';
 
     try {
-        // Create date object from the ISO string (which should already be in correct timezone)
         const date = new Date(dateString);
 
-        // Format using the browser's locale, but with timezone awareness
-        return date.toLocaleTimeString([], {
-            hour: '2-digit',
+        // Convert to specified timezone (or use local time if not specified)
+        const options: Intl.DateTimeFormatOptions = {
+            hour: 'numeric',
             minute: '2-digit',
-            timeZone: timezone // Optional: force a specific timezone if needed
-        });
+            hour12: true
+        };
+
+        if (timezone) {
+            options.timeZone = timezone;
+        }
+
+        let formattedTime = date.toLocaleTimeString([], options);
+
+        // Remove leading zero if present (some browsers still add it with numeric)
+        formattedTime = formattedTime.replace(/^0/, '');
+
+        return formattedTime;
     } catch (e) {
         console.error('Error formatting time:', e);
         return '--:--';
     }
 };
-
   export const getTime24Hour = (date: Date | string = new Date()): string => {
     const d = new Date(date);
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });

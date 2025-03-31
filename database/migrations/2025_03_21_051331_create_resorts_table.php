@@ -16,19 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
-            $table->string('wiki_url')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->integer('base_elevation')->nullable();
-            $table->integer('peak_elevation')->nullable();
-            $table->date('season_start')->nullable();
-            $table->date('season_end')->nullable();
             $table->string('image_url')->nullable();
             $table->string('nearest_city')->nullable();
-            $table->string('website')->nullable();
-            $table->string('skiable_area')->nullable();
-            $table->string('lifts')->nullable();
-            $table->string('vertical')->nullable();
+            $table->string('state')->nullable();
+            $table->string('state_code')->nullable();
+            $table->string('local_time')->nullable();
             $table->timestamps();
         });
     }

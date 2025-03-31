@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
-import { ListIcon, GridIcon, Sunrise, Sunset } from 'lucide-vue-next';
-import { ref, onMounted  } from 'vue';
+import { type BreadcrumbItem, type WeatherResponse, type WeatherTab, type WeatherTabItem } from '@/types';
+import { Sunrise, Sunset, Wind } from 'lucide-vue-next';
+import { ref, onMounted } from 'vue';
 import { getTime12Hour } from '@/utils/date';
 
 const props = defineProps<{
     currentView: string;
-    continent: any;
-    country: any;
-    resort: any;
+    continent: Continent;
+    country: Country;
+    resort: Resort;
     debug?: boolean;
-    weatherData: any;
+    weatherData: WeatherResponse;
 }>();
 
 onMounted(() => {
@@ -32,8 +32,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 // Tab functionality
-const activeTab = ref('today');
-const tabs = [
+const activeTab = ref<WeatherTab>('today');
+const tabs: WeatherTabItem[] = [
     { id: 'today', label: 'Today' },
     { id: 'tomorrow', label: 'Tomorrow' },
     { id: 'threeDays', label: '3 Days' }
@@ -57,23 +57,22 @@ const tabs = [
                         <!-- Sunrise/Sunset keep their original styling -->
                         <div class="flex items-center gap-2">
                             <Sunrise class="w-5 h-5" />
-                            <span>{{ getTime12Hour(weatherData?.data?.sunrise) }}</span>
+                            <span>{{ getTime12Hour(weatherData?.data?.current?.sunrise) }}</span>
                         </div>
 
                         <div class="flex items-center gap-2">
                             <Sunset class="w-5 h-5" />
-                            <span>{{ getTime12Hour(weatherData?.data?.sunset) }}</span>
+                            <span>{{ getTime12Hour(weatherData?.data?.current?.sunset) }}</span>
                         </div>
 
-                        <!-- Weather metrics with grey labels -->
-                        <h1><span class="text-gray-500 dark:text-gray-400">Temp:</span> {{weatherData?.data?.temp }} ˚C</h1>
-                        <h1><span class="text-gray-500 dark:text-gray-400">Feels:</span> {{ weatherData?.data?.feels_like }} ˚C</h1>
-                        <h1><span class="text-gray-500 dark:text-gray-400">Visibility:</span> {{ weatherData?.data?.visibility }}m</h1>
-                        <h1><span class="text-gray-500 dark:text-gray-400">UV Index:</span> {{ weatherData?.data?.uvi }}</h1>
-                        <h1><span class="text-gray-500 dark:text-gray-400">Wind:</span> {{ weatherData?.data?.wind_speed }} km/h</h1>
-                        <h1><span class="text-gray-500 dark:text-gray-400">24h Snow:</span> {{ weatherData?.data?.daily_snow }} mm</h1>
-                        <h1><span class="text-gray-500 dark:text-gray-400">Snow 1hr:</span> {{ weatherData?.data?.snow1 }}</h1>
-                        <h1><span class="text-gray-500 dark:text-gray-400">Overnight snow:</span> peak value</h1>
+                        <h1><span class="text-gray-500 dark:text-gray-400">Temp:</span> {{ weatherData?.data?.current?.temp }} ˚C</h1>
+                        <h1><span class="text-gray-500 dark:text-gray-400">Feels:</span> {{ weatherData?.data?.current?.feels_like }} ˚C</h1>
+                        <h1><span class="text-gray-500 dark:text-gray-400">Visibility:</span> {{ weatherData?.data?.current?.visibility }}m</h1>
+                        <h1><span class="text-gray-500 dark:text-gray-400">UV Index:</span> {{ weatherData?.data?.current?.uvi }}</h1>
+                        <h1><span class="text-gray-500 dark:text-gray-400">Wind:</span> {{ weatherData?.data?.current?.wind_speed }} km/h</h1>
+                        <h1><span class="text-gray-500 dark:text-gray-400">24h Snow:</span> {{ weatherData?.data?.current?.daily_snow }} mm</h1>
+                        <h1><span class="text-gray-500 dark:text-gray-400">Snow 1hr:</span> {{ weatherData?.data?.current?.snow1 }}</h1>
+                        <h1><span class="text-gray-500 dark:text-gray-400">Overnight snow:</span> </h1>
                     </div>
                 </div>
 
@@ -83,7 +82,7 @@ const tabs = [
                         <h1>monthly snowfall average</h1>
                     </div>
                     <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                        <h1>tomorrow</h1>
+                        <h1>tomorrow: morning | afternoon | evening</h1>
                     </div>
                     <div class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
                         <h1>next week daily update</h1>
@@ -92,8 +91,44 @@ const tabs = [
 
                 <!-- next 24 hours -->
                 <div class="grid gap-4 md:grid-cols-1">
-                    <div class="flex gap-4 p-4 border justify-evenly md:grid-cols-1 rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                        <h1> next 24 hours</h1>
+                    <div class="p-4 border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                        <div class="flex gap-4 pb-4 overflow-x-auto">
+                            <div v-for="(hour, index) in weatherData?.data?.hourly" :key="index"
+                                class="flex flex-col items-center p-3 rounded-lg min-w-40 ">
+                                <!-- Time -->
+                                <span class="text-sm font-medium">
+                                    {{ hour.time }}
+                                </span>
+
+                                <!-- Weather Icon -->
+                                <img v-if="hour.icon"
+                                    :src="`https://openweathermap.org/img/wn/${hour.icon}.png`"
+                                    :alt="hour.weather_description"
+                                    class="w-10 h-10">
+
+                                <!-- Temperature -->
+                                <span class="text-lg font-bold">{{ hour.temp }}°C</span>
+
+                                <!-- Wind Speed -->
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <Wind />
+                                    </svg>
+                                    <span class="text-sm">{{ hour.wind_speed }} km/h</span>
+                                </div>
+
+                                <!-- Visibility -->
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <span class="text-sm">{{ hour.visibility }} km</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
