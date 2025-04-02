@@ -54,7 +54,7 @@ return [
 
     // elevation
     'open_meteo' => [
-        'base_url' => 'https://api.open-meteo.com/v1/',
+        'base_url' => 'https://api.open-meteo.com/v1/elevation?',
     ],
 
     // lifty

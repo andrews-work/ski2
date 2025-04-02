@@ -13,18 +13,34 @@ use Illuminate\Support\Facades\Log;
 
 class CategoriesController extends Controller
 {
-    public function info($continentSlug, $countrySlug, $resortSlug)
+    public function info($continentSlug, $countrySlug, $resortSlug, InfoController $infoController)
     {
-        $resort = Resort::where('slug', $resortSlug)->firstOrFail();
+        $resort = Resort::where('slug', $resortSlug)
+            ->with('country.continent')
+            ->firstOrFail();
 
-        $infoController = new InfoController();
         $resortData = $infoController->getResortData($resort->name);
+
+        $resortWithData = array_merge(
+            $resort->toArray(),
+            [
+                'timezone' => $resortData['resort']['timezone'] ?? null,
+                'latitude' => $resortData['resort']['latitude'] ?? null,
+                'longitude' => $resortData['resort']['longitude'] ?? null,
+                'base_elevation' => $resortData['resort']['base_elevation'] ?? null,
+                'state' => $resortData['resort']['state'] ?? null,
+                'state_code' => $resortData['resort']['state_code'] ?? null,
+                'local_time' => $resortData['local_time'] ?? null,
+                'lift_data' => $resortData['lift_data'] ?? [],
+                'weatherData' => $resortData['weatherData'] ?? []
+            ]
+        );
 
         return Inertia::render('resort/Info', [
             'currentView' => 'info',
             'continent' => $resort->country->continent,
             'country' => $resort->country,
-            'resort' => $resort->fresh(),
+            'resort' => $resortWithData,
             'debug' => $resortData
         ]);
     }
@@ -98,12 +114,12 @@ class CategoriesController extends Controller
         }
     }
 
-    public function business($continentSlug, $countrySlug, $resortSlug)
+    public function companies($continentSlug, $countrySlug, $resortSlug)
     {
         try {
             $resort = Resort::where('slug', $resortSlug)->firstOrFail();
-            return Inertia::render('resort/Business', [
-                'currentView' => 'business',
+            return Inertia::render('resort/Companies', [
+                'currentView' => 'companies',
                 'continent' => $resort->country->continent,
                 'country' => $resort->country,
                 'resort' => $resort,
@@ -165,7 +181,3 @@ class CategoriesController extends Controller
         }
     }
 }
-
-
-
-

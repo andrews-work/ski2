@@ -12,15 +12,20 @@ class CategoriesTableSeeder extends Seeder
     {
         $categories = [
             ['name' => 'Info', 'slug' => 'info', 'icon' => 'Info'],
+            ['name' => 'Weather', 'slug' => 'weather', 'icon' => 'CloudSun'],
+            ['name' => 'Forums', 'slug' => 'forums', 'icon' => 'NotebookPen'],
+
             ['name' => 'Hotels', 'slug' => 'hotels', 'icon' => 'Hotel'],
             ['name' => 'Restaurants', 'slug' => 'restaurants', 'icon' => 'Utensils'],
-            ['name' => 'Forums', 'slug' => 'forums', 'icon' => 'NotebookPen'],
             ['name' => 'Bars', 'slug' => 'bars', 'icon' => 'Martini'],
-            ['name' => 'Events', 'slug' => 'events', 'icon' => 'PartyPopper'],
+
             ['name' => 'Jobs', 'slug' => 'jobs', 'icon' => 'BriefcaseBusiness'],
             ['name' => 'Marketplace', 'slug' => 'marketplace', 'icon' => 'ShoppingCart'],
             ['name' => 'Businesses', 'slug' => 'businesses', 'icon' => 'Building2'],
-            ['name' => 'Weather', 'slug' => 'weather', 'icon' => 'cloudSun'],
+
+            ['name' => 'Events', 'slug' => 'events', 'icon' => 'PartyPopper'],
+            ['name' => 'Health', 'slug' => 'health', 'icon' => 'Dumbbell'],
+            ['name' => 'Content', 'slug' => 'content', 'icon' => 'Camera'],
         ];
 
         foreach ($categories as $category) {

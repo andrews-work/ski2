@@ -19,15 +19,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: props.continent.name, href: `/resorts/${props.continent.slug}` },
     { title: props.country.name, href: `/resorts/${props.continent.slug}/${props.country.slug}` },
     { title: props.resort.name, href: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}` },
-    { title: 'Business' },
+    { title: 'Companies', href: '' },
 ];
 </script>
 
 <template>
-    <Head title="Business" />
+    <Head title="Companies" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div v-if="currentView === 'business'" class="p-4 text-white">
+        <div v-if="currentView === 'companies'" class="p-4 text-white">
             <h1>list businesses<br>
 
                 categories - physios, law, it, contsutrction, etc.. <br>

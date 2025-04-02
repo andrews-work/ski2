@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem, type WeatherResponse, type WeatherTab, type WeatherTabItem } from '@/types';
+import { type BreadcrumbItem, type WeatherResponse, type WeatherTab, type WeatherTabItem, type Resort, type Country, type Continent } from '@/types';
 import { Sunrise, Sunset, Wind } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { getTime12Hour } from '@/utils/date';
@@ -28,7 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: props.continent.name, href: `/resorts/${props.continent.slug}` },
     { title: props.country.name, href: `/resorts/${props.continent.slug}/${props.country.slug}` },
     { title: props.resort.name, href: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}` },
-    { title: 'Weather' },
+    { title: 'Weather', href: '' },
 ];
 
 // Tab functionality

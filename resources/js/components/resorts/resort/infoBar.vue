@@ -26,23 +26,22 @@ const toggleExpand = () => {
             <!-- Resort Details -->
             <div class="flex items-center gap-4 text-sm text-gray-300">
                 <!-- Altitude -->
-                <p v-if="resort.altitude">Base: {{ resort.altitude }}m</p>
-                <p v-else>Alt: N/A</p>
+                <p>Base 215cm</p>
 
                 <!-- Season Dates -->
-                <p v-else>Season: N/A</p>
+                <p>Season 600cm</p>
 
                 <!-- Current Temperature -->
                 <p v-if="resort.current_temp !== null && resort.current_temp !== undefined">
                     {{ resort.current_temp }}°C
                 </p>
-                <p v-else>Temp: N/A</p>
+                <p v-else>Temp: 6˚C</p>
 
                 <!-- Total Snowfall -->
                 <p v-if="resort.total_snowfall !== null && resort.total_snowfall !== undefined">
                     Snowfall: {{ resort.total_snowfall }}cm
                 </p>
-                <p v-else>Snowfall: N/A</p>
+                <p v-else>24hrs: 6cm</p>
             </div>
 
             <!-- Search Bar -->

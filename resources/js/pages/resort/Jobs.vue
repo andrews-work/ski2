@@ -19,7 +19,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: props.continent.name, href: `/resorts/${props.continent.slug}` },
     { title: props.country.name, href: `/resorts/${props.continent.slug}/${props.country.slug}` },
     { title: props.resort.name, href: `/resorts/${props.continent.slug}/${props.country.slug}/${props.resort.slug}` },
-    { title: 'Jobs' },
+    { title: 'Jobs', href: '' },
 ];
 </script>
 
@@ -31,7 +31,7 @@ const breadcrumbs: BreadcrumbItem[] = [
             <h1>
                 list jobs in resort<br>
 
-                can search by category - company - level 
+                can search by category - company - level
             </h1>
         </div>
     </AppLayout>

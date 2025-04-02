@@ -47,17 +47,13 @@ class ResortsController extends Controller {
 
     public function resorts($continentSlug, $countrySlug)
     {
-        // Fetch the country based on the slug
         $country = Country::where('slug', $countrySlug)->first();
 
         if (!$country) {
             return redirect()->back()->with('error', 'Country not found.');
         }
 
-        // Fetch the continent associated with the country
         $continent = $country->continent;
-
-        // Fetch the resorts for the given country
         $resorts = Resort::where('country_id', $country->id)->get();
 
         return Inertia::render('Resorts', [
@@ -81,14 +77,7 @@ class ResortsController extends Controller {
 
         $country = $resort->country;
         $continent = $country->continent;
-
-        $categories = Category::all()->map(function ($category) {
-            return [
-                'title' => $category->name,
-                'icon' => $category->icon,
-                'link' => '/category/' . $category->slug,
-            ];
-        });
+        $categories = Category::all();
 
         return Inertia::render('Resorts', [
             'currentView' => 'resort',

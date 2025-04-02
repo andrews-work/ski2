@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Resort\CategoriesController;
+use App\Http\Controllers\Resort\InfoController;
 use App\Http\Controllers\ResortsController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,5 +19,7 @@ Route::get('/resorts/{continentSlug}/{countrySlug}/{resortSlug}/bars', [Categori
 Route::get('/resorts/{continentSlug}/{countrySlug}/{resortSlug}/events', [CategoriesController::class, 'events'])->name('resorts.events');
 Route::get('/resorts/{continentSlug}/{countrySlug}/{resortSlug}/jobs', [CategoriesController::class, 'jobs'])->name('resorts.jobs');
 Route::get('/resorts/{continentSlug}/{countrySlug}/{resortSlug}/marketplace', [CategoriesController::class, 'marketplace'])->name('resorts.marketplace');
-Route::get('/resorts/{continentSlug}/{countrySlug}/{resortSlug}/business', [CategoriesController::class, 'business'])->name('resorts.business');
+Route::get('/resorts/{continentSlug}/{countrySlug}/{resortSlug}/companies', [CategoriesController::class, 'companies'])->name('resorts.companies');
 Route::get('/resorts/{continentSlug}/{countrySlug}/{resortSlug}/weather', [CategoriesController::class, 'weather'])->name('resorts.weather');
+
+Route::get('/resorts/{continentSlug}/{countrySlug}/{resortSlug}/info/update', [InfoController::class, 'updateMinute'])->name('resorts.info.updateMinute');

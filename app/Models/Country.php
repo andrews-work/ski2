@@ -15,11 +15,16 @@ class Country extends Model
 
     public function continent()
     {
-        return $this -> belongsTo(Continent::class, 'continent_id');
+        return $this->belongsTo(Continent::class);
+    }
+
+    public function states()
+    {
+        return $this->hasMany(State::class);
     }
 
     public function resorts()
     {
-        return $this -> hasMany (Resort::class);
+        return $this->hasMany(Resort::class)->whereNull('town_id');
     }
 }

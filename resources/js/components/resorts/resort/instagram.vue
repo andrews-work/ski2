@@ -7,7 +7,7 @@ const featuredItems = [
 </script>
 
 <template>
-  <div class="min-h-screen p-6">
+  <div class="p-6 ">
 
     <h2 class="mb-6 text-2xl font-bold">Top Content</h2>
     <div class="flex pb-6 space-x-6 overflow-x-auto">
@@ -24,27 +24,7 @@ const featuredItems = [
       </div>
     </div>
 
-    <h2 class="mb-6 text-2xl font-bold">Latest Content</h2>
-    <div class="flex pb-6 space-x-6 overflow-x-auto">
-      <div
-        v-for="item in featuredItems"
-        :key="item.id"
-        class="flex-none w-64 transition-all bg-gray-700 rounded-lg shadow-md hover:shadow-lg"
-      >
-        <img :src="item.imageUrl" alt="Post Image" class="object-cover w-full rounded-t-lg h-80" />
-        <div class="p-4">
-          <h3 class="text-lg font-semibold truncate">{{ item.title }}</h3>
-          <p class="mt-2 text-sm text-gray-600">{{ item.description }}</p>
-        </div>
-      </div>
-    </div>
 
   </div>
 </template>
 
-<style scoped>
-/* Optional: For a more Instagram-like feel */
-img {
-  border-radius: 10px;
-}
-</style>

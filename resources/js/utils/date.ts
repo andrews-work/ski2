@@ -95,6 +95,7 @@ const MONTH_NAMES = [
         return '--:--';
     }
 };
+
   export const getTime24Hour = (date: Date | string = new Date()): string => {
     const d = new Date(date);
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });

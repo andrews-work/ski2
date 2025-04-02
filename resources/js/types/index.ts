@@ -60,10 +60,11 @@ export interface Resort {
     season_end?: string;
 }
 
-
 export interface Category {
-    title: string;
+    id: number;
+    name: string;
     icon: string;
+    slug: string;
     link: string;
 }
 

@@ -1,3 +1,19 @@
+<script setup lang="ts">
+import { CableCar, LampDesk, PlugZap, Armchair, UtensilsCrossed, CarFront, Shirt, PartyPopper, House } from 'lucide-vue-next';
+
+const categories = [
+  { id: 1, name: 'Kitchen', icon: UtensilsCrossed },
+  { id: 2, name: 'Car', icon: CarFront },
+  { id: 3, name: 'Clothes', icon: Shirt },
+  { id: 4, name: 'Ski\'s & Boards', icon: CableCar },
+  { id: 5, name: 'Living Room', icon: LampDesk },
+  { id: 6, name: 'Furniture', icon: Armchair },
+  { id: 7, name: 'Electronics', icon: PlugZap },
+  { id: 8, name: 'Events', icon: PartyPopper },
+  { id: 9, name: 'Housing', icon: House },
+];
+</script>
+
 <template>
 
 <div class="flex flex-col flex-1 h-full gap-4 p-4 border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
@@ -24,18 +40,3 @@
 
   </template>
 
-  <script setup lang="ts">
-  import { CableCar, LampDesk, PlugZap, Armchair, UtensilsCrossed, CarFront, Shirt, PartyPopper, House } from 'lucide-vue-next';
-
-  const categories = [
-    { id: 1, name: 'Kitchen', icon: UtensilsCrossed },
-    { id: 2, name: 'Car', icon: CarFront },
-    { id: 3, name: 'Clothes', icon: Shirt },
-    { id: 4, name: 'Ski\'s & Boards', icon: CableCar },
-    { id: 5, name: 'Living Room', icon: LampDesk },
-    { id: 6, name: 'Furniture', icon: Armchair },
-    { id: 7, name: 'Electronics', icon: PlugZap },
-    { id: 8, name: 'Events', icon: PartyPopper },
-    { id: 9, name: 'Housing', icon: House },
-  ];
-  </script>
