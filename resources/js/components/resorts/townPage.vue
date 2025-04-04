@@ -81,15 +81,15 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
             <!-- Categories Section -->
             <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
                 <!-- In your TownPage.vue template -->
-<div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-    <TownCategories
-        :categories="categories"
-        :continent="continent"
-        :country="country"
-        :state="state"
-        :town="town"
-    />
-</div>
+            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                <TownCategories
+                    :categories="categories"
+                    :continent="continent"
+                    :country="country"
+                    :state="state"
+                    :town="town"
+                />
+            </div>
             </div>
 
             <!-- Instagram Section -->

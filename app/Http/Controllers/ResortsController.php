@@ -72,12 +72,16 @@ class ResortsController extends Controller {
         $continent = Continent::where('slug', $continentSlug)->first();
         $country = Country::where('slug', $countrySlug)->firstOrFail();
         $states = $country ? $country->states : [];
+        $resorts = [];
+        $towns = [];
 
         return Inertia::render('Resorts', [
             'currentView' => 'state',
             'continent' => $continent,
             'country' => $country,
             'states' => $states,
+            'resorts' => $resorts,
+            'towns' => $towns,
             'continents' => [],
             'categories' => [],
         ]);

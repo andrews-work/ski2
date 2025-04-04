@@ -72,7 +72,7 @@ export interface Town {
     categories?: Category[];
     description?: string;
     population: number;
-
+    elevation: number;
 }
 
 export interface Resort {
