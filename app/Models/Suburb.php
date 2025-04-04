@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Suburb extends Model
 {
-    protected $table = '';
-    protected $fillable = ['name', 'location', 'town_id'];
+    protected $table = 'suburbs';
+    protected $fillable = [
+        'name', 'slug',
+        'location', 'town_id',
+        'ski in', 'ski out',
+        'companies',
+    ];
 
     public function town()
     {
         return $this->belongsTo(Town::class);
-    }
-
-    public function bases()
-    {
-        return $this->hasMany(Base::class);
     }
 }

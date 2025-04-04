@@ -40,7 +40,7 @@ class CountriesTableSeeder extends Seeder
             ['name' => 'Turkmenistan', 'slug' => 'turkmenistan', 'continent_id' => $asia->id],
             ['name' => 'Uzbekistan', 'slug' => 'uzbekistan', 'continent_id' => $asia->id],
 
-            // Europe
+            // // Europe
             ['name' => 'Albania', 'slug' => 'albania', 'continent_id' => $europe->id],
             ['name' => 'Andorra', 'slug' => 'andorra', 'continent_id' => $europe->id],
             ['name' => 'Austria', 'slug' => 'austria', 'continent_id' => $europe->id],
@@ -85,7 +85,7 @@ class CountriesTableSeeder extends Seeder
             ['name' => 'Peru', 'slug' => 'peru', 'continent_id' => $southAmerica->id],
             ['name' => 'Ecuador', 'slug' => 'ecuador', 'continent_id' => $southAmerica->id],
 
-            // Middle East
+            // // Middle East
             ['name' => 'Armenia', 'slug' => 'armenia', 'continent_id' => $middleEast->id],
             ['name' => 'Georgia', 'slug' => 'georgia', 'continent_id' => $middleEast->id],
             ['name' => 'Iran', 'slug' => 'iran', 'continent_id' => $middleEast->id],

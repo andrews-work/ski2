@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bases', function (Blueprint $table) {
+        Schema::create('states', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->foreignId('resort_id')->constrained();
-            $table->foreignId('mountain_id')->constrained();
-            $table->foreignId('suburb_id')->nullable()->constrained();
-            $table->point('location')->nullable();
-            $table->text('description')->nullable();
+            $table->string('code');
+            $table->string('slug')->unique();
+            $table->string('timezone');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bases');
+        Schema::dropIfExists('states');
     }
 };

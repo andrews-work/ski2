@@ -25,6 +25,14 @@ class Country extends Model
 
     public function resorts()
     {
-        return $this->hasMany(Resort::class)->whereNull('town_id');
+        return $this->hasManyThrough(
+            Resort::class,
+            State::class,
+            'country_id',
+            'id',
+            'town_id',
+            'id'
+        )->join('towns', 'resorts.town_id', '=', 'towns.id')
+         ->join('states', 'towns.state_id', '=', 'states.id');
     }
 }

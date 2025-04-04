@@ -2,7 +2,8 @@
 import { onMounted } from 'vue';
 
 const props = defineProps<{
-    resort: any;
+    town?: any;
+    resort?: any;
 }>();
 
 onMounted(() => {

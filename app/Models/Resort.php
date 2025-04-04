@@ -9,17 +9,55 @@ class Resort extends Model
 {
     use HasFactory;
 
-    protected $table = 'resorts';
-    protected $fillable = ['name', 'slug', 'country_id', 'town_id', 'latitude', 'longitude','base_elevation', 'image_url', 'state', 'state_code', 'timezone', 'start',];
+    protected $appends = ['local_time', 'is_open'];
+    protected $fillable = [
+        'name', 'slug', 'town_id',
+        'latitude', 'longitude', 'image_url',
+        'open', 'close', 'start', 'end', 'base_elevation'
+    ];
 
-    public function country()
+    // Accessors
+    public function getTimezoneAttribute()
     {
-        return $this->belongsTo(Country::class);
+        return optional($this->town)->state->timezone ?? 'UTC';
     }
 
+    public function getLocalTimeAttribute()
+    {
+        return now()->setTimezone($this->timezone)->format('g:ia');
+    }
+
+    public function getIsOpenAttribute()
+    {
+        // if (!$this->open || !$this->close) return null;
+
+        // $now = now()->setTimezone($this->timezone);
+        // $open = today()->setTime(
+        //     $this->open->hour,
+        //     $this->open->minute
+        // );
+        // $close = today()->setTime(
+        //     $this->close->hour,
+        //     $this->close->minute
+        // );
+
+        // return $now->between($open, $close);
+    }
+
+    // Relationships
     public function town()
     {
         return $this->belongsTo(Town::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsToThrough(Country::class, Town::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsToThrough(State::class, Town::class);
     }
 
     public function mountains()
@@ -27,23 +65,8 @@ class Resort extends Model
         return $this->hasMany(Mountain::class);
     }
 
-    public function bases()
-    {
-        return $this->hasMany(Base::class);
-    }
-
     public function categories()
     {
         return $this->belongsToMany(Category::class);
-    }
-
-    public function getStateAttribute()
-    {
-        return $this->town?->state ?? $this->attributes['state'];
-    }
-
-    public function getStateCodeAttribute()
-    {
-        return $this->town?->state?->code ?? $this->attributes['state_code'];
     }
 }

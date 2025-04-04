@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class State extends Model
 {
-    protected $table = '';
-    protected $fillable = ['name', 'code', 'country_id'];
+    protected $table = 'states';
+    protected $fillable = ['name', 'code', 'slug', 'country_id', 'timezone'];
 
     public function country()
     {
@@ -23,4 +23,5 @@ class State extends Model
     {
         return $this->hasManyThrough(Resort::class, Town::class);
     }
+
 }

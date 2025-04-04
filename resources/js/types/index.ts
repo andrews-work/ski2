@@ -39,6 +39,7 @@ export interface Continent {
     id: number;
     name: string;
     slug: string;
+    count: number;
 }
 
 export interface Country {
@@ -46,19 +47,42 @@ export interface Country {
     name: string;
     slug: string;
     continent_id: number;
+    resorts_count: number;
+}
+
+export interface State {
+    id: number;
+    name:string;
+    slug: string;
+    country_id: number;
+    towns_count: number;
+}
+
+export interface Town {
+    id: number;
+    name: string;
+    slug: string;
+    state_id: number;
+    resorts_count: number;
+    state: State;
 }
 
 export interface Resort {
     id: number;
     name: string;
     slug: string;
-    country_id: number;
+    town_id: number;
     latitude?: number;
     longitude?: number;
     altitude?: number;
     season_start?: string;
     season_end?: string;
+    count: number;
+    town: Town;
 }
+
+
+
 
 export interface Category {
     id: number;

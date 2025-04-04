@@ -18,7 +18,11 @@ class DatabaseSeeder extends Seeder
         // new code
         $this -> call (ContinentsTableSeeder::class);
         $this -> call (CountriesTableSeeder::class);
+        $this -> call (StateSeeder::class);
+        $this -> call (TownSeeder::class);
         $this -> call (ResortsSeeder::class);
+        // $this -> call (MountainSeeder::class);
+
         $this -> call (CategoriesTableSeeder::class);
     }
 }

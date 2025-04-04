@@ -2,14 +2,13 @@
 
 categories
 
-government (police, fire deparment, hospital, post office)  mountain,
+resort | accomodation | food | getting around | companies | jobs | activities | marketplace | bathrooms | forums | travel | arts (galleries / musesums etc) | weather 
 
 -->
 
-
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { type Category, type Resort, type Country, type Continent } from '@/types';
+import { type Category, type Town, type Country, type Continent, type State } from '@/types';
 import { PartyPopper, MapPinned, BriefcaseBusiness, ShoppingCart, Info, NotebookPen, Hotel, Utensils, Plane, Martini, Building2, CloudSun, Camera, Dumbbell } from 'lucide-vue-next';
 
 const iconComponents = {
@@ -30,10 +29,11 @@ const iconComponents = {
 };
 
 defineProps<{
-    categories?: Category[];  // made optional
-    continent?: Continent;   // made optional
-    country?: Country;       // made optional
-    resort?: Resort | Town;  // made optional and more flexible
+    categories?: Category[];
+    continent?: Continent;
+    country?: Country;
+    state?: State;
+    town?: Town;
 }>();
 </script>
 
@@ -42,21 +42,16 @@ defineProps<{
         <!-- Header -->
         <div class="grid gap-4 auto-rows-min md:grid-cols-1">
             <div class="relative flex items-center justify-center h-40 overflow-hidden rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                <h1 class="text-2xl font-bold text-center">Categories</h1>
+                <h1 class="text-2xl font-bold text-center">Town Categories</h1>
             </div>
         </div>
 
-        <!-- Show this when no categories exist -->
-        <div v-if="!categories || categories.length === 0" class="p-8 text-center">
-            <p>No categories available for this resort.</p>
-        </div>
-
         <!-- Category Grid -->
-        <div class="grid gap-4 auto-rows-min md:grid-cols-3">
+        <div v-if="categories && categories.length > 0" class="grid gap-4 auto-rows-min md:grid-cols-3">
             <Link
                 v-for="category in categories"
                 :key="category.name"
-                :href="`/resorts/${continent.slug}/${country.slug}/${resort.slug}/${category.slug}`"
+                :href="`/resorts/${continent?.slug}/${country?.slug}/${state?.slug}/${town?.slug}/${category.slug}`"
                 class="relative overflow-hidden border aspect-video rounded-xl border-sidebar-border/70 dark:border-sidebar-border group"
             >
                 <!-- Icon -->
@@ -70,6 +65,9 @@ defineProps<{
                 </h1>
             </Link>
         </div>
+
+        <div v-else class="p-8 text-center">
+            <p>No categories available for this town.</p>
+        </div>
     </div>
 </template>
-

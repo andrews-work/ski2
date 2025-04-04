@@ -1,0 +1,129 @@
+<script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type Continent, type Country, type State, type Town, type Resort, type BreadcrumbItem  } from '@/types';
+import { Head, Link } from '@inertiajs/vue3';
+import InfoBar from './town/infoBar.vue';
+import TownCategories from './town/categories.vue';
+import { computed } from 'vue';
+import Instagram from './resort/instagram.vue';
+import HeroImage from './resort/heroImage.vue';
+import LiveCam from './resort/liveCam.vue';
+import Average from './town/average.vue';
+import Reviews from './resort/reviews.vue';
+import { PartyPopper, BriefcaseBusiness, ShoppingCart, Info, NotebookPen, Hotel, Martini, Building2, Utensils, CloudSun, Camera, Dumbbell } from 'lucide-vue-next';
+
+const props = defineProps<{
+    continent?: Continent;
+    country?: Country;
+    state?: State;
+    towns?:Town[];
+    town?: Town;
+    resort?: Resort;
+    currentView?: string;
+}>();
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    { title: 'Resorts', href: '/resorts' },
+    { title: 'Continents', href: '/resorts/continents' },
+    {
+        title: props.continent?.name || 'Continent',
+        href: props.continent ? `/resorts/${props.continent.slug}` : '#'
+    },
+    {
+        title: props.country?.name || 'Country',
+        href: props.continent && props.country ?
+            `/resorts/${props.continent.slug}/${props.country.slug}` : '#'
+    },
+    {
+        title: props.state?.name || 'State',
+        href: props.continent && props.country && props.state ?
+            `/resorts/${props.continent.slug}/${props.country.slug}/${props.state.slug}` : '#'
+    },
+    {
+        title: props.town?.name || 'Town',
+        href: props.continent && props.country && props.state && props.town ?
+            `/resorts/${props.continent.slug}/${props.country.slug}/${props.state.slug}/${props.town.slug}` : '#'
+    },
+]);
+</script>
+
+<template>
+    <Head :title="`Resorts - ${town?.name}`" />
+
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl">
+            <!-- Hero Image Section -->
+            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                <HeroImage :resort="town" />
+            </div>
+
+            <!-- Info Bar Section -->
+            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                <InfoBar :resort="resort" :town="town" />
+            </div>
+
+            <!-- Live Cam Section -->
+            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                <LiveCam />
+            </div>
+
+            <!-- Average Stats Section -->
+            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                <Average />
+            </div>
+
+            <!-- Categories Section -->
+            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                <!-- <TownCategories
+                    v-if="town"
+                    :categories="town.categories || resort?.categories"
+                    :continent="continent"
+                    :country="country"
+                    :state="state"
+                    :town="town"
+                /> -->
+            </div>
+
+            <!-- Instagram Section -->
+            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                <Instagram />
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+                <Reviews />
+            </div>
+
+            <!-- Back Link -->
+            <div class="flex items-center gap-2 justify-evenly">
+                <Link
+                    v-if="continent && country && state"
+                    :href="`/resorts/${continent.slug}/${country.slug}/${state.slug}`"
+                    class="px-4 py-2 text-blue-500 transition-colors duration-200 border rounded-lg hover:bg-blue-500/10 border-sidebar-border/70 dark:border-sidebar-border"
+                >
+                    ← Back to {{ state?.name || 'State' }}
+                </Link>
+                <Link
+                    v-if="continent && country"
+                    :href="`/resorts/${continent.slug}/${country.slug}`"
+                    class="px-4 py-2 text-blue-500 transition-colors duration-200 border rounded-lg hover:bg-blue-500/10 border-sidebar-border/70 dark:border-sidebar-border"
+                >
+                    ← Back to {{ country?.name || 'Country' }}
+                </Link>
+                <Link
+                    v-if="continent"
+                    :href="`/resorts/${continent.slug}`"
+                    class="px-4 py-2 text-blue-500 transition-colors duration-200 border rounded-lg hover:bg-blue-500/10 border-sidebar-border/70 dark:border-sidebar-border"
+                >
+                    ← Back to {{ continent?.name || 'Continent' }}
+                </Link>
+                <Link
+                    href="/resorts/continents"
+                    class="px-4 py-2 text-blue-500 transition-colors duration-200 border rounded-lg hover:bg-blue-500/10 border-sidebar-border/70 dark:border-sidebar-border"
+                >
+                    ← Back to All Continents
+                </Link>
+            </div>
+        </div>
+    </AppLayout>
+</template>

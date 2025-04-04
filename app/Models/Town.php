@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Town extends Model
 {
-    protected $table = '';
-    protected $fillable = ['name', 'location', 'elevation', 'state_id'];
+    protected $table = 'towns';
+    protected $fillable = ['name', 'slug', 'location', 'elevation', 'state_id'];
 
     public function state()
     {
@@ -23,5 +23,5 @@ class Town extends Model
     {
         return $this->hasMany(Resort::class);
     }
-    
+
 }
