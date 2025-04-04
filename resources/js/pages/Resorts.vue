@@ -19,7 +19,7 @@ const props = defineProps<{
     towns?: Town[];
     town: Town;
     resorts?: Resort[];
-    resort?: Resort | null;
+    resort: Resort;
     categories?: Category[];
 }>();
 </script>
@@ -64,8 +64,16 @@ const props = defineProps<{
         :resort="resort ?? null"
         :categories="categories ?? []"
     />
-    <!-- <ResortPage
+    <ResortPage
         v-else-if="currentView === 'resort'"
-    /> -->
+        :continent="continent"
+        :country="country"
+        :resort="resort"
+        :state="state"
+        :town="town"
+        :categories="categories ?? []"
+    />
 </template>
+
+
 

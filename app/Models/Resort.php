@@ -29,7 +29,7 @@ class Resort extends Model
         return now()->setTimezone($this->timezone)->format('g:ia');
     }
 
-    // relationships 
+    // relationships
     public function town()
     {
         return $this->belongsTo(Town::class);
@@ -44,4 +44,16 @@ class Resort extends Model
     {
         return $this->belongsToMany(Category::class);
     }
+
+    public function country()
+{
+    return $this->hasOneThrough(
+        Country::class,
+        Town::class,
+        'id', // Foreign key on towns table
+        'id', // Foreign key on countries table
+        'town_id', // Local key on resorts table
+        'state_id' // Local key on towns table (which connects to states)
+    )->through('town.state');
+}
 }

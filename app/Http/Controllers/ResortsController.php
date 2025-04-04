@@ -120,12 +120,12 @@ class ResortsController extends Controller {
 
         return Inertia::render('Resorts', [
             'currentView' => 'town',
-            'continents' => [], // Add empty array to satisfy prop requirement
+            'continents' => [],
             'continent' => $town->state->country->continent,
             'country' => $town->state->country,
             'state' => $town->state,
             'town' => $town,
-            'resort' => $resort, // Can be null
+            'resort' => $resort,
             'resorts' => $town->resorts,
             'categories' => Category::all(),
         ]);
@@ -135,8 +135,8 @@ class ResortsController extends Controller {
     {
         Log::info('loading resort');
         $resort = Resort::with([
-            'town.state.country.continent', // Eager load all relationships
-            'country.continent'
+            'town.state.country.continent',
+            'categories'
         ])->where('slug', $resortSlug)->first();
 
         if (!$resort) {
@@ -150,7 +150,7 @@ class ResortsController extends Controller {
             'continents' => [],
             'continent' => $resort->town->state->country->continent,
             'countries' => [],
-            'country' => $resort->town->tate->country,
+            'country' => $resort->town->state->country, // Fixed typo here
             'town' => $resort->town,
             'resort' => $resort,
             'categories' => $categories,
