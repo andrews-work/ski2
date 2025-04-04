@@ -6,26 +6,16 @@
     import { onMounted } from 'vue';
 
     onMounted(() => {
-        console.log('Town:', props.town);
-        console.log('Resort:', props.resort);
-        if (props.town && props.resort) {
-            console.log('Continent:', props.continent);
-            console.log('Country:', props.country);
-            console.log('State:', props.state);
-        }
-    });
-
-    onMounted(() => {
     console.log('InfoBar props:', props);
     console.log('State code in InfoBar:', props.state?.code);
 });
 
-const props = defineProps<{
-    continent: Continent;
-    country: Country;
-    state: State;
-    town: Town;
-    resort: Resort | null; // Resort can be null if town has no resorts
+    const props = defineProps<{
+    continent?: Continent | null;
+    country?: Country | null;
+    state?: State | null;
+    town?: Town | null;
+    resort?: Resort | null;
 }>();
 
     const isExpanded = ref(false);

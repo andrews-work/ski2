@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type Continent, type Country, type State, type Resort } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import { type Continent, type Country, type State, type Resort } from '@/types';
 import { ref, computed } from 'vue';
 
 const props = defineProps<{
-    continent?: Continent | null;
-    country?: Country | null;
+    continent: Continent | null;
+    country: Country | null;
     states: State[];
-    resorts?: Resort[]; // Added resorts prop
+    resorts: Resort[];
 }>();
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Resorts', href: '/resorts' },
@@ -40,8 +40,8 @@ const sortedStates = computed(() => {
                 : b.name.localeCompare(a.name);
         } else {
             return sortDirection.value === 'asc'
-                ? (a.resort_count || 0) - (b.resort_count || 0)
-                : (b.resort_count || 0) - (a.resort_count || 0);
+                ? (a.resorts_count || 0) - (b.resorts_count || 0)
+                : (b.resorts_count || 0) - (a.resorts_count || 0);
         }
     });
 });
@@ -169,8 +169,8 @@ const setSortBy = (type: 'name' | 'count') => {
                         <div class="absolute inset-0 flex items-center justify-center transition-all duration-300 group-hover:opacity-0">
                             <div class="text-center">
                                 <h2 class="text-2xl font-medium">{{ state.name }}</h2>
-                                <p v-if="state.resort_count" class="mt-2 text-gray-600 dark:text-gray-400">
-                                    {{ state.resort_count }} resorts
+                                <p v-if="state.resorts_count" class="mt-2 text-gray-600 dark:text-gray-400">
+                                    {{ state.resorts_count }} resorts
                                 </p>
                                 <p v-if="state.code" class="mt-1 font-mono text-sm">
                                     {{ state.code }}
@@ -215,8 +215,8 @@ const setSortBy = (type: 'name' | 'count') => {
                         <div class="absolute inset-0 flex items-center justify-center transition-all duration-300 group-hover:opacity-0">
                             <div class="text-center">
                                 <h2 class="text-2xl font-medium">{{ resort.name }}</h2>
-                                <p v-if="resort.state" class="mt-2 text-gray-600 dark:text-gray-400">
-                                    {{ resort.state }}
+                                <p v-if="state.name" class="mt-2 text-gray-600 dark:text-gray-400">
+                                    {{ state.name }}
                                 </p>
                             </div>
                         </div>
@@ -229,8 +229,8 @@ const setSortBy = (type: 'name' | 'count') => {
                             >
                                 View {{ resort.name }}
                             </Link>
-                            <p v-if="resort.base_elevation" class="mt-2 text-gray-300">
-                                Elevation: {{ resort.base_elevation }}m
+                            <p v-if="town.elevation" class="mt-2 text-gray-300">
+                                Elevation: {{ town.elevation }}m
                             </p>
                         </div>
                     </template>

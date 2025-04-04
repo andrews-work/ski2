@@ -9,17 +9,19 @@ class Resort extends Model
 {
     use HasFactory;
 
-    protected $appends = ['local_time', 'is_open'];
+    protected $table = 'resorts';
+    protected $appends = ['local_time'];
     protected $fillable = [
-        'name', 'slug', 'town_id',
+        'name', 'slug',
+        'town_id', 'mountain_id',
         'latitude', 'longitude', 'image_url',
-        'open', 'close', 'start', 'end', 'base_elevation'
+        'open', 'close', 'start', 'end'
     ];
 
-    // Accessors
+    // accessors
     public function getTimezoneAttribute()
     {
-        return optional($this->town)->state->timezone ?? 'UTC';
+        return $this->town->state->timezone;
     }
 
     public function getLocalTimeAttribute()
@@ -27,37 +29,10 @@ class Resort extends Model
         return now()->setTimezone($this->timezone)->format('g:ia');
     }
 
-    public function getIsOpenAttribute()
-    {
-        // if (!$this->open || !$this->close) return null;
-
-        // $now = now()->setTimezone($this->timezone);
-        // $open = today()->setTime(
-        //     $this->open->hour,
-        //     $this->open->minute
-        // );
-        // $close = today()->setTime(
-        //     $this->close->hour,
-        //     $this->close->minute
-        // );
-
-        // return $now->between($open, $close);
-    }
-
-    // Relationships
+    // relationships 
     public function town()
     {
         return $this->belongsTo(Town::class);
-    }
-
-    public function country()
-    {
-        return $this->belongsToThrough(Country::class, Town::class);
-    }
-
-    public function state()
-    {
-        return $this->belongsToThrough(State::class, Town::class);
     }
 
     public function mountains()

@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type Continent } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import { type Continent } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Resorts', href: '/resorts' },
     { title: 'Continents', href: '/resorts/continents' },
 ];
 
-defineProps<{
+const props = defineProps<{
     continents: Continent[];
 }>();
 </script>

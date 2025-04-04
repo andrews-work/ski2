@@ -1,24 +1,25 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type Continent, type Country, type State, type Town, type Resort, type BreadcrumbItem  } from '@/types';
+import { type BreadcrumbItem, type Continent, type Country, type State, type Town, type Resort, type Category } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
 import InfoBar from './town/infoBar.vue';
 import TownCategories from './town/categories.vue';
-import { computed } from 'vue';
 import Instagram from './resort/instagram.vue';
 import HeroImage from './resort/heroImage.vue';
 import LiveCam from './resort/liveCam.vue';
 import Average from './town/average.vue';
 import Reviews from './resort/reviews.vue';
-import { PartyPopper, BriefcaseBusiness, ShoppingCart, Info, NotebookPen, Hotel, Martini, Building2, Utensils, CloudSun, Camera, Dumbbell } from 'lucide-vue-next';
+import { computed } from 'vue';
 
 const props = defineProps<{
-    continent: Continent; // Required for town page
-    country: Country;     // Required for town page
-    state: State;         // Required for town page
-    town: Town;           // Required for town page
-    resorts: Resort;    // Required for town page
-    currentView?: string; // Optional since it's only used for layout
+    continent: Continent | null;
+    country: Country | null;
+    state: State | null;
+    towns: Town[];
+    town: Town | null;
+    resorts: Resort[];
+    resort: Resort | null;
+    categories: Category[];
 }>();
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
@@ -79,14 +80,16 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
             <!-- Categories Section -->
             <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                <!-- <TownCategories
-                    v-if="town"
-                    :categories="town.categories || resort?.categories"
-                    :continent="continent"
-                    :country="country"
-                    :state="state"
-                    :town="town"
-                /> -->
+                <!-- In your TownPage.vue template -->
+<div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+    <TownCategories
+        :categories="categories"
+        :continent="continent"
+        :country="country"
+        :state="state"
+        :town="town"
+    />
+</div>
             </div>
 
             <!-- Instagram Section -->

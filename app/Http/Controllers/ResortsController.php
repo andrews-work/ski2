@@ -106,19 +106,17 @@ class ResortsController extends Controller {
     {
         $town = Town::with([
             'state.country.continent',
-            'resorts',
-            'resorts.categories' // If you need categories for resorts
+            'resorts'
         ])->where('slug', $townSlug)
           ->firstOrFail();
 
-        if (!$town->state || !$town->state->country || !$town->state->country->continent) {
-            abort(404); // Ensure full hierarchy exists
-        }
-
         $resort = $town->resorts->sortByDesc('is_primary')->first();
+        Log::info('resort' . $resort);
+        Log::info('resort' . $town);
 
         return Inertia::render('Resorts', [
             'currentView' => 'town',
+            'continents' => [], // Add empty array to satisfy prop requirement
             'continent' => $town->state->country->continent,
             'country' => $town->state->country,
             'state' => $town->state,
@@ -131,22 +129,25 @@ class ResortsController extends Controller {
 
     public function resort($continentSlug, $countrySlug, $stateSlug, $townSlug, $resortSlug)
     {
-        $resort = Resort::where('slug', $resortSlug)->first();
+        Log::info('loading resort');
+        $resort = Resort::with([
+            'town.state.country.continent', // Eager load all relationships
+            'country.continent'
+        ])->where('slug', $resortSlug)->first();
 
         if (!$resort) {
             return redirect()->back()->with('error', 'Resort not found.');
         }
 
-        $country = $resort->country;
-        $continent = $country->continent;
         $categories = Category::all();
 
         return Inertia::render('Resorts', [
             'currentView' => 'resort',
             'continents' => [],
-            'continent' => $continent,
+            'continent' => $resort->town->state->country->continent,
             'countries' => [],
-            'country' => $country,
+            'country' => $resort->town->tate->country,
+            'town' => $resort->town,
             'resort' => $resort,
             'categories' => $categories,
         ]);

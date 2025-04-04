@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type Continent, type Country, type State, type Town, type Resort } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import { type Continent, type Country, type State, type Town, type Resort } from '@/types';
 import { ref } from 'vue';
 
 const props = defineProps<{
@@ -10,9 +9,7 @@ const props = defineProps<{
     countries: Country[];
     country: Country | null;
     states: State[];
-    state: State | null;
     towns: Town[];
-    town: Town | null;
     resorts: Resort[];
 }>();
 
@@ -124,7 +121,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="text-center">
                             <h2 class="text-2xl font-medium">{{ state.name }}</h2>
                             <p class="mt-2 text-gray-600 dark:text-gray-400">
-    {{ state.towns_count }} {{ state.towns_count === 1 ? 'town' : 'towns' }}
+    {{ state.resorts_count }} {{ state.resorts_count === 1 ? 'town' : 'towns' }}
 </p>
                         </div>
                     </div>

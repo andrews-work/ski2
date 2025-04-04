@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type Continent, type Country, type State, type Town, type Resort } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import { type Continent, type Country, type State, type Town, type Resort } from '@/types';
 import { ref, computed, onMounted } from 'vue';
 
 const props = defineProps<{
-    continent?: Continent | null;
-    country?: Country | null;
-    state?: State | null;
+    continent: Continent | null;
+    country: Country | null;
+    state: State | null;
     towns: Town[];
-    resorts?: Resort[]; // Added resorts prop
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -47,14 +45,14 @@ const sortedTowns = computed(() => {
                 : b.name.localeCompare(a.name);
         } else {
             return sortDirection.value === 'asc'
-                ? (a.resort_count || 0) - (b.resort_count || 0)
-                : (b.resort_count || 0) - (a.resort_count || 0);
+                ? (a.resorts_count || 0) - (b.resorts_count || 0)
+                : (b.resorts_count || 0) - (a.resorts_count || 0);
         }
     });
 });
 
 const sortedResorts = computed(() => {
-    if (!props.resorts) return [];
+    if (!props.resort) return [];
     return [...props.resorts].sort((a, b) => {
         return sortDirection.value === 'asc'
             ? a.name.localeCompare(b.name)
@@ -187,8 +185,8 @@ onMounted(() => {
                         <div class="absolute inset-0 flex items-center justify-center transition-all duration-300 group-hover:opacity-0">
                             <div class="text-center">
                                 <h2 class="text-2xl font-medium">{{ town.name }}</h2>
-                                <p v-if="town.resort_count" class="mt-2 text-gray-600 dark:text-gray-400">
-                                    {{ town.resort_count }} resorts
+                                <p v-if="town.resorts_count" class="mt-2 text-gray-600 dark:text-gray-400">
+                                    {{ town.resorts_count }} resorts
                                 </p>
                                 <p v-if="town.population" class="mt-1 text-sm">
                                     Population: {{ town.population.toLocaleString() }}
@@ -243,7 +241,7 @@ onMounted(() => {
                         </div>
 
                         <!-- Hover content -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-white transition-all duration-300 opacity-0 bg-black/80 group-hover:opacity-100">
+                        <!-- <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-white transition-all duration-300 opacity-0 bg-black/80 group-hover:opacity-100">
                             <Link
                                 :href="`/resorts/${continent.slug}/${country.slug}/${state.slug}/${resort.town_slug}/${resort.slug}`"
                                 class="px-6 py-3 text-xl font-medium transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700"
@@ -256,7 +254,7 @@ onMounted(() => {
                             <div v-else class="mt-2 text-red-400">
                                 Currently Closed
                             </div>
-                        </div>
+                        </div> -->
                     </template>
                     <template v-else>
                         <!-- Disabled state when missing required params -->
@@ -311,3 +309,6 @@ onMounted(() => {
         </div>
     </AppLayout>
 </template>
+
+
+
