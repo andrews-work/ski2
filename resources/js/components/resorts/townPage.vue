@@ -9,7 +9,7 @@ import HeroImage from './resort/heroImage.vue';
 import LiveCam from './resort/liveCam.vue';
 import Average from './town/average.vue';
 import Reviews from './resort/reviews.vue';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 
 const props = defineProps<{
     continent: Continent | null;
@@ -22,29 +22,57 @@ const props = defineProps<{
     categories: Category[];
 }>();
 
-const breadcrumbs = computed<BreadcrumbItem[]>(() => [
-    { title: 'Resorts', href: '/resorts' },
-    { title: 'Continents', href: '/resorts/continents' },
-    {
-        title: props.continent?.name || 'Continent',
-        href: props.continent ? `/resorts/${props.continent.slug}` : '#'
-    },
-    {
-        title: props.country?.name || 'Country',
-        href: props.continent && props.country ?
-            `/resorts/${props.continent.slug}/${props.country.slug}` : '#'
-    },
-    {
-        title: props.state?.name || 'State',
-        href: props.continent && props.country && props.state ?
-            `/resorts/${props.continent.slug}/${props.country.slug}/${props.state.slug}` : '#'
-    },
-    {
-        title: props.town?.name || 'Town',
-        href: props.continent && props.country && props.state && props.town ?
-            `/resorts/${props.continent.slug}/${props.country.slug}/${props.state.slug}/${props.town.slug}` : '#'
-    },
-]);
+// Debug logs - add these lines
+console.log('Props received in TownPage:', {
+    continent: props.continent,
+    country: props.country,
+    state: props.state,
+    town: props.town,
+    resorts: props.resorts,
+    resort: props.resort,
+    categories: props.categories
+});
+
+// Additional debug for specific problematic areas
+console.log('Town slug:', props.town?.slug);
+console.log('State slug:', props.state?.slug);
+console.log('Country slug:', props.country?.slug);
+console.log('Continent slug:', props.continent?.slug);
+
+// This will help identify if breadcrumbs are causing issues
+const breadcrumbs = computed<BreadcrumbItem[]>(() => {
+    const crumbs = [
+        { title: 'Resorts', href: '/resorts' },
+        { title: 'Continents', href: '/resorts/continents' },
+        {
+            title: props.continent?.name || 'Continent',
+            href: props.continent ? `/resorts/${props.continent.slug}` : '#'
+        },
+        {
+            title: props.country?.name || 'Country',
+            href: props.continent && props.country ?
+                `/resorts/${props.continent.slug}/${props.country.slug}` : '#'
+        },
+        {
+            title: props.state?.name || 'State',
+            href: props.continent && props.country && props.state ?
+                `/resorts/${props.continent.slug}/${props.country.slug}/${props.state.slug}` : '#'
+        },
+        {
+            title: props.town?.name || 'Town',
+            href: props.continent && props.country && props.state && props.town ?
+                `/resorts/${props.continent.slug}/${props.country.slug}/${props.state.slug}/${props.town.slug}` : '#'
+        },
+    ];
+
+    console.log('Breadcrumbs generated:', crumbs);
+    return crumbs;
+});
+
+// You can also add this to check after component is mounted
+onMounted(() => {
+    console.log('Component mounted with props:', props);
+});
 </script>
 
 <template>
@@ -54,7 +82,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         <div class="flex flex-col flex-1 h-full gap-4 p-4 rounded-xl">
             <!-- Hero Image Section -->
             <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                <HeroImage :resort="town" />
+                <HeroImage :resort="resort" />
             </div>
 
             <!-- Info Bar Section -->
