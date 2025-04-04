@@ -47,7 +47,7 @@ class ResortsController extends Controller {
             ->get();
 
         $towns = Town::whereIn('state_id', $states->pluck('id'))
-            ->with(['resorts', 'state']) 
+            ->with(['resorts', 'state'])
             ->get();
 
         $resorts = Resort::whereIn('town_id', $towns->pluck('id'))
@@ -83,6 +83,7 @@ class ResortsController extends Controller {
         ]);
     }
 
+    // list of towns
     public function towns($continentSlug, $countrySlug, $stateSlug)
     {
         $continent = Continent::where('slug', $continentSlug)->first();
@@ -103,28 +104,28 @@ class ResortsController extends Controller {
 
     public function town($continentSlug, $countrySlug, $stateSlug, $townSlug)
     {
-        $continent = Continent::where('slug', $continentSlug)->first();
-        $country = Country::where('slug', $countrySlug)->first();
-        $state = State::where('slug', $stateSlug)->first();
-        $town = Town::where('slug', $townSlug)->first();
+        $town = Town::with([
+            'state.country.continent',
+            'resorts',
+            'resorts.categories' // If you need categories for resorts
+        ])->where('slug', $townSlug)
+          ->firstOrFail();
 
-        if (!$town) {
-            return redirect()->back()->with('error', 'Town not found.');
+        if (!$town->state || !$town->state->country || !$town->state->country->continent) {
+            abort(404); // Ensure full hierarchy exists
         }
 
-        $resort = Resort::where('town_id', $town->id)->first();
-        $categories = Category::all();
-        $continents = Continent::all();
+        $resort = $town->resorts->sortByDesc('is_primary')->first();
 
         return Inertia::render('Resorts', [
             'currentView' => 'town',
-            'continents' => $continents,
-            'continent' => $continent,
-            'country' => $country,
-            'state' => $state,
+            'continent' => $town->state->country->continent,
+            'country' => $town->state->country,
+            'state' => $town->state,
             'town' => $town,
-            'resort' => $resort,
-            'categories' => $categories,
+            'resort' => $resort, // Can be null
+            'resorts' => $town->resorts,
+            'categories' => Category::all(),
         ]);
     }
 

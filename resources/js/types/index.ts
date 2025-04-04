@@ -56,6 +56,8 @@ export interface State {
     slug: string;
     country_id: number;
     towns_count: number;
+    code: string;
+    timezone: number;
 }
 
 export interface Town {
@@ -65,6 +67,7 @@ export interface Town {
     state_id: number;
     resorts_count: number;
     state: State;
+    categories?: Category[];
 }
 
 export interface Resort {
@@ -79,6 +82,25 @@ export interface Resort {
     season_end?: string;
     count: number;
     town: Town;
+
+     snowfall?: number;
+     temperature?: number;
+     wind_speed?: number;
+     hotels_count?: number;
+     restaurants_count?: number;
+     season_snow?: number;
+     base_depth?: number;
+     todays_snow?: number;
+     mountains_count?: number;
+     conditions?: string;
+     ticket_price?: number;
+     parks_count?: number;
+     area?: string;
+     lifts?: {
+         chairlifts: number;
+         gondolas: number;
+     };
+     distance_from_city?: string;
 }
 
 

@@ -10,15 +10,11 @@ import TownPage from '@/components/resorts/townPage.vue';
 const props = defineProps<{
     currentView: string;
     continents: Continent[];
-    continent: Continent | null;
-    countries: Country[];
-    country: Country | null;
-    states: State[];
-    state: State | null;
-    towns: Town[];
-    town: Town | null;
+    continent: Continent | null; // Only required for country/state/town views
+    country: Country | null;     // Only required for state/town views
+    state: State | null;         // Only required for town view
+    town: Town | null;           // Only required for town view
     resorts: Resort[];
-    resort: Resort | null;
     categories: Category[];
 }>();
 </script>

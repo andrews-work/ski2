@@ -13,13 +13,12 @@ import Reviews from './resort/reviews.vue';
 import { PartyPopper, BriefcaseBusiness, ShoppingCart, Info, NotebookPen, Hotel, Martini, Building2, Utensils, CloudSun, Camera, Dumbbell } from 'lucide-vue-next';
 
 const props = defineProps<{
-    continent?: Continent;
-    country?: Country;
-    state?: State;
-    towns?:Town[];
-    town?: Town;
-    resort?: Resort;
-    currentView?: string;
+    continent: Continent; // Required for town page
+    country: Country;     // Required for town page
+    state: State;         // Required for town page
+    town: Town;           // Required for town page
+    resorts: Resort;    // Required for town page
+    currentView?: string; // Optional since it's only used for layout
 }>();
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
@@ -59,7 +58,13 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
             <!-- Info Bar Section -->
             <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                <InfoBar :resort="resort" :town="town" />
+                <InfoBar
+                    :continent="continent"
+                    :country="country"
+                    :state="state"
+                    :town="town"
+                    :resort="resort"
+                />
             </div>
 
             <!-- Live Cam Section -->

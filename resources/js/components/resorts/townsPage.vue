@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
 import { type Continent, type Country, type State, type Town, type Resort } from '@/types';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const props = defineProps<{
     continent?: Continent | null;
@@ -69,6 +69,12 @@ const toggleSortDirection = () => {
 const setSortBy = (type: 'name' | 'count') => {
     sortBy.value = type;
 };
+
+onMounted(() => {
+    console.log('TownPage props:', props);
+    console.log('State:', props.state);
+    console.log('State code:', props.state?.code);
+});
 </script>
 
 <template>
