@@ -2,9 +2,10 @@
 import { Link } from '@inertiajs/vue3';
 import { type Category, type Town, type Country, type Continent, type State } from '@/types';
 import {
-    PartyPopper, MapPinned, BriefcaseBusiness, ShoppingCart,
-    Info, NotebookPen, Hotel, Utensils, Plane,
-    Martini, Building2, CloudSun, Camera, Dumbbell
+    PartyPopper, MapPinned, BriefcaseBusiness, ShoppingCart, Bus,
+    Info, NotebookPen, Hotel, Utensils, Plane, CableCar, Brush,
+    Martini, Building2, CloudSun, Camera, Dumbbell, TentTree, Axe,
+    DollarSign
 } from 'lucide-vue-next';
 
 // Map icon names to components
@@ -22,7 +23,13 @@ const iconComponents: Record<string, any> = {
     'Camera': Camera,
     'Dumbbell': Dumbbell,
     'Plane': Plane,
-    'MapPinned': MapPinned
+    'MapPinned': MapPinned,
+    'TentTree' : TentTree,
+    'CableCar' : CableCar,
+    'Axe' : Axe,
+    'Brush' : Brush,
+    'Bus' : Bus,
+    'DollarSign' : DollarSign
 };
 
 const props = defineProps<{
@@ -32,13 +39,16 @@ const props = defineProps<{
     state?: State | null;
     town?: Town | null;
 }>();
+
+console.log('click route');
+
 </script>
 
 <template>
-    <div class="flex flex-col flex-1 h-full gap-4 p-4 border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+    <div class="flex flex-col flex-1 h-full gap-4 rounded-xl">
         <!-- Header -->
         <div class="grid gap-4 auto-rows-min md:grid-cols-1">
-            <div class="relative flex items-center justify-center h-40 overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+            <div class="relative flex items-center justify-center overflow-hidden h-80 rounded-xl">
                 <h1 class="text-2xl font-bold text-center">Town Categories</h1>
             </div>
         </div>

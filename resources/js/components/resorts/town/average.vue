@@ -104,7 +104,7 @@ const currentDisplay = ref<Record<string, PriceDisplay>>({
     week: 'cheap'
 });
 
-const isExpanded = ref(false);
+const isExpanded = ref(true);
 
 const cycleDisplay = (timeFrame: string, direction: 'next' | 'prev') => {
     const displays: PriceDisplay[] = ['cheap', 'average', 'expensive', 'no expense'];
@@ -123,8 +123,10 @@ const toggleExpandAll = () => {
 </script>
 
 <template>
-    <div class="p-4 rounded-xl">
-        <h1 class="mb-4 text-xl font-semibold text-center text-gray-100">Price Breakdown</h1>
+    <div class=" rounded-xl">
+        <!-- <div class="flex items-center justify-center h-40">
+            <h1 class="m-4 text-xl font-semibold text-center text-gray-100">Price Breakdown</h1>
+        </div> -->
 
         <div class="grid gap-4 md:grid-cols-3">
             <div

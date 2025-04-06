@@ -23,21 +23,21 @@ const props = defineProps<{
 }>();
 
 // Debug logs - add these lines
-console.log('Props received in TownPage:', {
-    continent: props.continent,
-    country: props.country,
-    state: props.state,
-    town: props.town,
-    resorts: props.resorts,
-    resort: props.resort,
-    categories: props.categories
-});
+// console.log('Props received in TownPage:', {
+//     continent: props.continent,
+//     country: props.country,
+//     state: props.state,
+//     town: props.town,
+//     resorts: props.resorts,
+//     resort: props.resort,
+//     categories: props.categories
+// });
 
-// Additional debug for specific problematic areas
-console.log('Town slug:', props.town?.slug);
-console.log('State slug:', props.state?.slug);
-console.log('Country slug:', props.country?.slug);
-console.log('Continent slug:', props.continent?.slug);
+// // Additional debug for specific problematic areas
+// console.log('Town slug:', props.town?.slug);
+// console.log('State slug:', props.state?.slug);
+// console.log('Country slug:', props.country?.slug);
+// console.log('Continent slug:', props.continent?.slug);
 
 // This will help identify if breadcrumbs are causing issues
 const breadcrumbs = computed<BreadcrumbItem[]>(() => {
@@ -65,13 +65,13 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
         },
     ];
 
-    console.log('Breadcrumbs generated:', crumbs);
+    // console.log('Breadcrumbs generated:', crumbs);
     return crumbs;
 });
 
 // You can also add this to check after component is mounted
 onMounted(() => {
-    console.log('Component mounted with props:', props);
+    // console.log('Component mounted with props:', props);
 });
 </script>
 
@@ -102,14 +102,12 @@ onMounted(() => {
             </div>
 
             <!-- Average Stats Section -->
-            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+            <div class="relative overflow-hidden rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
                 <Average />
             </div>
 
-            <!-- Categories Section -->
-            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
-                <!-- In your TownPage.vue template -->
-            <div class="relative overflow-hidden border rounded-xl border-sidebar-border/70 dark:border-sidebar-border">
+
+            <div class="relative overflow-hidden rounded-xl">
                 <TownCategories
                     :categories="categories"
                     :continent="continent"
@@ -117,7 +115,6 @@ onMounted(() => {
                     :state="state"
                     :town="town"
                 />
-            </div>
             </div>
 
             <!-- Instagram Section -->

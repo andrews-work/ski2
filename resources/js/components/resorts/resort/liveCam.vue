@@ -2,7 +2,7 @@
 </script>
 
 <template>
-    <div class="h-40 bg-gray-900">
+    <div class="h-40 ">
         <h1 class="text-center"> live cams</h1>
     </div>
 </template>

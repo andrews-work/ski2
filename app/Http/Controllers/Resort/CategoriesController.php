@@ -152,6 +152,7 @@ class CategoriesController extends Controller
 
     public function weather($continentSlug, $countrySlug, $resortSlug, WeatherController $weatherController)
     {
+        Log::info('log weather');
         try {
             $resort = Resort::where('slug', $resortSlug)->firstOrFail();
             $weatherData = $weatherController->getWeather($resort->name);

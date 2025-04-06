@@ -127,7 +127,7 @@ class ResortsController extends Controller {
             'town' => $town,
             'resort' => $resort,
             'resorts' => $town->resorts,
-            'categories' => Category::all(),
+            'categories' => Category::where('type','town')->get(),
         ]);
     }
 
@@ -150,10 +150,10 @@ class ResortsController extends Controller {
             'continents' => [],
             'continent' => $resort->town->state->country->continent,
             'countries' => [],
-            'country' => $resort->town->state->country, // Fixed typo here
+            'country' => $resort->town->state->country,
             'town' => $resort->town,
             'resort' => $resort,
-            'categories' => $categories,
+            'categories' => Category::where('type', 'resort')->get(),
         ]);
     }
 }

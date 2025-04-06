@@ -6,17 +6,17 @@
     import { onMounted } from 'vue';
 
     onMounted(() => {
-    console.log('InfoBar props:', props);
-    console.log('State code in InfoBar:', props.state?.code);
-});
+    // console.log('InfoBar props:', props);
+    // console.log('State code in InfoBar:', props.state?.code);
+    });
 
     const props = defineProps<{
-    continent?: Continent | null;
-    country?: Country | null;
-    state?: State | null;
-    town?: Town | null;
-    resort?: Resort | null;
-}>();
+        continent?: Continent | null;
+        country?: Country | null;
+        state?: State | null;
+        town?: Town | null;
+        resort?: Resort | null;
+    }>();
 
     const isExpanded = ref(false);
     const toggleExpand = () => {
